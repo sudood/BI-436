@@ -18,25 +18,63 @@
   <body>
     <div id="map"></div>
     <script>
-      // This example creates circles on the map, representing populations in North
-      // America.
-
       // First, create an object containing LatLng and population for each city.
+      // data from: https://www.currentresults.com/Weather-Extremes/Canada/largest-canadian-cities-list.php
       var citymap = {
-        chicago: {
-          center: {lat: 41.878, lng: -87.629},
-          population: 2714856
+        toronto: {
+          center: {lat: 43.700, lng: -79.400},
+          population: 5583064
         },
-        newyork: {
-          center: {lat: 40.714, lng: -74.005},
-          population: 8405837
-        },
-        losangeles: {
-          center: {lat: 34.052, lng: -118.243},
-          population: 3857799
+        montreal: {
+          center: {lat: 45.5017, lng: -73.5673},
+          population: 3824221
         },
         vancouver: {
-          center: {lat: 49.25, lng: -123.1},
+          center: {lat: 49.2827, lng: -123.1207},
+          population: 2313328
+        },
+        ottawa: {
+          center: {lat: 45.4214, lng: -75.6919},
+          population: 1236324
+        },
+        calgary: {
+          center: {lat: 51.0486, lng: -114.0708},
+          population: 1214839
+        },
+        edmonton: {
+          center: {lat: 53.5333, lng: -113.5000},
+          population: 1159869
+        },
+        QuebecCity: {
+          center: {lat: 46.8167, lng: -71.2167},
+          population: 765706
+        },
+        Winnipeg: {
+          center: {lat: 49.8994, lng: -97.1392},
+          population: 730018
+        },
+        Hamilton: {
+          center: {lat: 43.2500, lng: -79.8667},
+          population: 721053
+        },
+        KitchenerWaterloo: {
+          center: {lat: 43.4500, lng: -80.4833},
+          population: 477160
+        },
+        London: {
+          center: {lat: 42.9837, lng: -81.2497},
+          population: 474786
+        },
+        Halifax: {
+          center: {lat: 44.6478, lng: -63.5714},
+          population: 390328
+        },
+        sudbury: {
+          center: {lat: 46.4900, lng: -81.0100},
+          population: 3857799
+        },
+        sarnia: {
+          center: {lat: 42.9994, lng: -82.3089},
           population: 603502
         }
       };
@@ -45,7 +83,7 @@
         // Create the map.
         var map = new google.maps.Map(document.getElementById('map'), {
           zoom: 4,
-          center: {lat: 37.090, lng: -95.712},
+          center: {lat: 61.000, lng: -95.000},
           mapTypeId: google.maps.MapTypeId.TERRAIN
         });
 
