@@ -3,28 +3,53 @@ var app = express();
 var server = require('http').Server(app);
 var request = require('request');
 var fs = require("fs");
+var router = express.Router();
+var port = 9000;
 
-// // For requiring local javascript files.
 
+
+// FOR REQUIRING LOCAL JAVASCRIPT FILES.
 // var algo = require('./astar.js');
 // var graphDef = require('./graph_definition.js');
 
-// For reading in data from filesystem.
+var dictCities = [];
 
-// fs.readFile('data/coordinates/something.json', 'utf8', function (err,data) {
-//   var geo_nodes = JSON.parse(data);
-//   for (var ind in geo_nodes.features) {
-//     g.addNode(g, geo_nodes.features[ind]);
-//   }
-// });
-
-var router = express.Router();              // get an instance of the express Router
-
-// test route to make sure everything is working (accessed at GET http://localhost:8080/api)
-router.get('/', function(req, res) {
-  res.json({ message: 'hooray! welcome to our api!' });
+// FOR READING IN DATA FROM FILESYSTEM.
+fs.readFile('../DataSet/ontario-eng.csv', 'utf8', function (err,data) {
+  processData("ON", data);
 });
-//
+
+
+function processData(prov, allText) {
+  var allTextLines = allText.split(/\r\n|\n/);
+  var headers = allTextLines[0].split(',');
+  var lines = [];
+
+  for (var i = 1; i < allTextLines.length; i++) {
+    var data = allTextLines[i].split(',');
+    if (data.length == headers.length) {
+      var tarr = [];
+      for (var j = 0; j < headers.length; j++) {
+        tarr.push(data[j]);
+      }
+      if(dictCities[tarr[0]] == undefined){
+        dictCities[tarr[0]] = {
+          projects: [{title: tarr[1], cost: parseFloat(tarr[2])}],
+          sum: parseFloat(tarr[2]),
+          numApps: 0
+        };
+      }
+      else{
+        // do something for existing ones.
+        dictCities[tarr[0]].projects.push({title: tarr[1], cost: parseFloat(tarr[2])});
+        dictCities[tarr[0]].sum += parseFloat(tarr[2]);
+        dictCities[tarr[0]].numApps++;
+      }
+    }
+  }
+}
+
+// ROUTING
 // router.route('/buildings')
 //
 // // get example
@@ -64,33 +89,30 @@ router.get('/', function(req, res) {
 // });
 
 
-// REGISTER OUR ROUTES -------------------------------
-// all of our routes will be prefixed with /api
-app.use('/api', router);
+// test route to make sure everything is working (accessed at GET http://localhost:8080/api)
+//router.get('/', function(req, res) {
+//  res.json({ message: 'hooray! welcome to our api!' });
+//});
 
 app.use(express.static('client'));
-
 app.get('/*', function(req, res, next){
   var url = req.url;
-  //Checking for urls like ../../passwd etc
   if(!url.match(/\.\.+?\//)){
     res.sendFile(req.url, {root:'./client'});
   } else if(url === '/'){
     next();
   } else {
-    res.status(405).send('Did you try something naughty?');
+    res.status(404).send('NOT FOUND');
   }
 });
-
 app.get('/', function(req, res){
   res.sendFile('index.html', {root:'./client'});
 });
-
-//Config checks process.env, otherwise sets to 9000
-var port = process.env.PORT || 9000;
-
 module.exports.listen = function(){
   server.listen(port, function(){
     console.log('Server listening on port', port);
   });
 };
+app.listen(port, function() {
+  console.log("BI-436 Server Listening on Port 9000")
+});
