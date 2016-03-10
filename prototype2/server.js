@@ -1,4 +1,5 @@
 var express = require('express');
+var Baby = require('babyparse');
 var app = express();
 var server = require('http').Server(app);
 var request = require('request');
@@ -26,6 +27,19 @@ module.exports.listen = function(){
 };
 app.listen(port, function() {
 	console.log("BI-436 Server Listening on Port 9000")
+});
+//
+request("http://www.infrastructure.gc.ca/alt-format/isf-fsi/english-settings-configuration-anglaise/ontario-eng.csv", function(error, response, body) {
+//request("http://open.canada.ca/data/api/action/package_show?id=3b827124-86fd-458d-bbee-1a3807de06a6", function(error, response, body) {
+  if (error){
+  //pass
+  }
+  else{
+  	//console.log(body);
+  	parsed = Baby.parse(body);
+	rows = parsed.data;
+	console.log(rows);
+  }
 });
 
 // FOR REQUIRING LOCAL JAVASCRIPT FILES.
