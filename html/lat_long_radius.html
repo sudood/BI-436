@@ -102,7 +102,6 @@
             radius: Math.sqrt(citymap[city].population) * 100
           });
 	  google.maps.event.addListener(cityCircle, 'click', function(ev) {
-		alert("clicked");
 		window.location.href = "http://127.0.0.1:8000/heatmap.html";
 	  });
         }
