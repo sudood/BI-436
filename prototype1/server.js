@@ -3,27 +3,70 @@ var app = express();
 var server = require('http').Server(app);
 var request = require('request');
 var fs = require("fs");
+var Q = require("q");
 var router = express.Router();
 var port = 9000;
 
 
+var dictCities = [];
+
+fs.readFile('../DataSet/csv/alberta-test.csv', 'utf8', function (err,data) {
+  processData("AB", data);
+    // res.send(JSON.stringify(res));
+});
 
 // FOR REQUIRING LOCAL JAVASCRIPT FILES.
 // var algo = require('./astar.js');
 // var graphDef = require('./graph_definition.js');
 
-var dictCities = [];
-
 // FOR READING IN DATA FROM FILESYSTEM.
-fs.readFile('../DataSet/ontario-eng.csv', 'utf8', function (err,data) {
-  processData("ON", data);
-});
+// fs.readFile('../DataSet/alberta-eng.csv', 'utf8', function (err,data) {
+//   processData("AB", data);
+//   // console.log(dictCities["AB"]);
+// });
+// fs.readFile('../DataSet/british-columbia-colombie-britannique-eng.csv', 'utf8', function (err,data) {
+//   processData("BC", data);
+// });
+// fs.readFile('../DataSet/manitoba-eng.csv', 'utf8', function (err,data) {
+//   processData("MB", data);
+// });
+// fs.readFile('../DataSet/new-brunswick-nouveau-brunswick-eng.csv', 'utf8', function (err,data) {
+//   processData("NB", data);
+// });
+// fs.readFile('../DataSet/newfoundland-and-labrador-terre-neuve-et-labrador-eng.csv', 'utf8', function (err,data) {
+//   processData("NL", data);
+// });
+// fs.readFile('../DataSet/northwest-territories-territoires-du-nord-ouest-eng.csv', 'utf8', function (err,data) {
+//   processData("NT", data);
+// });
+// fs.readFile('../DataSet/nova-scotia-nouvelle-ecosse-eng.csv', 'utf8', function (err,data) {
+//   processData("NS", data);
+// });
+// fs.readFile('../DataSet/nunavut-eng.csv', 'utf8', function (err,data) {
+//   processData("NU", data);
+// });
+// fs.readFile('../DataSet/ontario-eng.csv', 'utf8', function (err,data) {
+//   processData("ON", data);
+// });
+// fs.readFile('../DataSet/prince-edward-island-ile-du-prince-edouard-eng.csv', 'utf8', function (err,data) {
+//   processData("PE", data);
+// });
+// fs.readFile('../DataSet/quebec-eng.csv', 'utf8', function (err,data) {
+//   processData("QC", data);
+// });
+// fs.readFile('../DataSet/saskatchewan-eng.csv', 'utf8', function (err,data) {
+//   processData("SK", data);
+// });
+// fs.readFile('../DataSet/yukon-eng.csv', 'utf8', function (err,data) {
+//   processData("YT", data);
+// });
 
-
-function processData(prov, allText) {
+var processData = function (prov, allText) {
+  var deferred = Q.defer();
   var allTextLines = allText.split(/\r\n|\n/);
   var headers = allTextLines[0].split(',');
   var lines = [];
+  var provinceSpent = 0;
 
   for (var i = 1; i < allTextLines.length; i++) {
     var data = allTextLines[i].split(',');
@@ -32,45 +75,63 @@ function processData(prov, allText) {
       for (var j = 0; j < headers.length; j++) {
         tarr.push(data[j]);
       }
-      if(dictCities[tarr[0]] == undefined){
-        dictCities[tarr[0]] = {
-          projects: [{title: tarr[1], cost: parseFloat(tarr[2])}],
+      provinceSpent += parseFloat(tarr[2]);
+      if(lines[tarr[0]] == undefined){
+        lines[tarr[0]] = {
+          projects: [{"title": tarr[1], "cost": parseFloat(tarr[2])}],
           sum: parseFloat(tarr[2]),
           numApps: 0
         };
       }
       else{
         // do something for existing ones.
-        dictCities[tarr[0]].projects.push({title: tarr[1], cost: parseFloat(tarr[2])});
-        dictCities[tarr[0]].sum += parseFloat(tarr[2]);
-        dictCities[tarr[0]].numApps++;
+        lines[tarr[0]].projects.push({title: tarr[1], cost: parseFloat(tarr[2])});
+        lines[tarr[0]].sum += parseFloat(tarr[2]);
+        lines[tarr[0]].numApps++;
       }
     }
   }
+  dictCities[prov] = {"data": lines, "cost": provinceSpent};
+  console.log(JSON.stringify(dictCities[prov]));
+  console.log(dictCities[prov]);
+  // res.send(JSON.stringify(dictCities[prov]));
+  // deferred.resolve(dictCities[prov]);
+  // return deferred.promise;
 }
 
 // ROUTING
-// router.route('/buildings')
-//
-// // get example
-// .get(function(req, res) {
-//   if (!fs.existsSync("./uwapi_results.json")) {
-//     request('https://api.uwaterloo.ca/v2/buildings/list.geojson?key=2a7eb4185520ceff7b74992e7df4f55e', function (error, response, body) {
-//       var BuildingResults = {};
-//       if (!error && response.statusCode == 200) {
-//         var inBuildings = JSON.parse(body);
-//
-//         for (var ind in inBuildings.features) {
-//           if (ind != 0) {
-//             BuildingResults[inBuildings.features[ind].properties.building_code] = {name: inBuildings.features[ind].properties.building_name, coordinates: inBuildings.features[ind].geometry.coordinates};
-//           }
-//         }
-//       }
-//       fs.writeFile( "uwapi_results.json", JSON.stringify(BuildingResults), "utf8");
-//       res.send(JSON.stringify(BuildingResults));
-//     })
-//   }
-// });
+router.route('/province/:id')
+
+// get example
+.get(function(req, res) {
+  var fileName = "../DataSet/json/" + req.params.id + ".json";
+  if (!fs.existsSync(fileName)) {
+    fs.readFile('../DataSet/csv/alberta-test.csv', 'utf8', function (err,data) {
+      processData("AB", data, res).then(function(res){
+        // res.send(JSON.stringify(res));
+      });
+    });
+  }
+  //
+  // else {
+  //   fs.readFile('./uwapi_results.json', 'utf8', function (err,data) {
+  //     if (err) {
+  //       res.send(err);
+  //     }
+  //     res.send(data);
+  //   })
+  // }
+  //
+  // // FOR READING IN DATA FROM FILESYSTEM.
+  //   res.send(JSON.stringify(dictCities[req.params.id])    );
+});
+
+router.route('/all')
+
+// get example
+.get(function(req, res) {
+  res.send(JSON.stringify(dictCities));
+});
 
 // router.route('/contact-form')
 //
@@ -90,9 +151,13 @@ function processData(prov, allText) {
 
 
 // test route to make sure everything is working (accessed at GET http://localhost:8080/api)
-//router.get('/', function(req, res) {
-//  res.json({ message: 'hooray! welcome to our api!' });
-//});
+router.get('/', function(req, res) {
+ res.json({ message: 'hooray! welcome to our api!' });
+});
+
+// REGISTER OUR ROUTES -------------------------------
+// all of our routes will be prefixed with /api
+app.use('/api', router);
 
 app.use(express.static('client'));
 app.get('/*', function(req, res, next){

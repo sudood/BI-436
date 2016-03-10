@@ -15,10 +15,10 @@
     "fs": "0.0.2",
     "nodemailer": "^2.2.1",
     "nodemon": "latest",
+    "q": "^1.4.1",
     "request": "^2.69.0"
   },
   "scripts": {
     "start": "node index.js"
   }
 }
-
