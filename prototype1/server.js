@@ -9,57 +9,11 @@ var port = 9000;
 
 
 var dictCities = {};
-
-// fs.readFile('../DataSet/csv/alberta-test.csv', 'utf8', function (err,data) {
-//   processData("AB", data);
-//     // res.send(JSON.stringify(res));
-// });
-
 // FOR REQUIRING LOCAL JAVASCRIPT FILES.
 // var algo = require('./astar.js');
 // var graphDef = require('./graph_definition.js');
 
 // FOR READING IN DATA FROM FILESYSTEM.
-// fs.readFile('../DataSet/alberta-eng.csv', 'utf8', function (err,data) {
-//   processData("AB", data);
-//   // console.log(dictCities["AB"]);
-// });
-// fs.readFile('../DataSet/british-columbia-colombie-britannique-eng.csv', 'utf8', function (err,data) {
-//   processData("BC", data);
-// });
-// fs.readFile('../DataSet/manitoba-eng.csv', 'utf8', function (err,data) {
-//   processData("MB", data);
-// });
-// fs.readFile('../DataSet/new-brunswick-nouveau-brunswick-eng.csv', 'utf8', function (err,data) {
-//   processData("NB", data);
-// });
-// fs.readFile('../DataSet/newfoundland-and-labrador-terre-neuve-et-labrador-eng.csv', 'utf8', function (err,data) {
-//   processData("NL", data);
-// });
-// fs.readFile('../DataSet/northwest-territories-territoires-du-nord-ouest-eng.csv', 'utf8', function (err,data) {
-//   processData("NT", data);
-// });
-// fs.readFile('../DataSet/nova-scotia-nouvelle-ecosse-eng.csv', 'utf8', function (err,data) {
-//   processData("NS", data);
-// });
-// fs.readFile('../DataSet/nunavut-eng.csv', 'utf8', function (err,data) {
-//   processData("NU", data);
-// });
-// fs.readFile('../DataSet/ontario-eng.csv', 'utf8', function (err,data) {
-//   processData("ON", data);
-// });
-// fs.readFile('../DataSet/prince-edward-island-ile-du-prince-edouard-eng.csv', 'utf8', function (err,data) {
-//   processData("PE", data);
-// });
-// fs.readFile('../DataSet/quebec-eng.csv', 'utf8', function (err,data) {
-//   processData("QC", data);
-// });
-// fs.readFile('../DataSet/saskatchewan-eng.csv', 'utf8', function (err,data) {
-//   processData("SK", data);
-// });
-// fs.readFile('../DataSet/yukon-eng.csv', 'utf8', function (err,data) {
-//   processData("YT", data);
-// });
 
 var processData = function (prov, allText) {
   var allTextLines = allText.split(/\r\n|\n/);
@@ -90,7 +44,7 @@ var processData = function (prov, allText) {
       }
     }
   }
-  dictCities[prov] = {data: lines, cost: provinceSpent};
+  dictCities[prov] = {data: lines, cost: provinceSpent.toFixed(2)};
 }
 
 // ROUTING
@@ -99,9 +53,51 @@ router.route('/province/:id')
 // get example
 .get(function(req, res) {
   var fileName = "../DataSet/json/" + req.params.id + ".json";
+  var csv;
   if (!fs.existsSync(fileName)) {
-    fs.readFile('../DataSet/csv/alberta-eng.csv', 'utf8', function (err,data) {
-      processData("AB", data);
+    switch (req.params.id) {
+      case "AB":
+        csv = '../DataSet/csv/alberta-eng.csv';
+        break;
+      case "BC":
+        csv = '../DataSet/csv/british-columbia-colombie-britannique-eng.csv';
+        break;
+      case "MB":
+        csv = '../DataSet/csv/manitoba-eng.csv';
+        break;
+      case "NB":
+        csv = '../DataSet/csv/new-brunswick-nouveau-brunswick-eng.csv';
+        break;
+      case "NL":
+        csv = '../DataSet/csv/newfoundland-and-labrador-terre-neuve-et-labrador-eng.csv';
+        break;
+      case "NT":
+        csv = '../DataSet/csv/northwest-territories-territoires-du-nord-ouest-eng.csv';
+        break;
+      case "NS":
+        csv = '../DataSet/csv/nova-scotia-nouvelle-ecosse-eng.csv';
+        break;
+      case "NU":
+        csv = '../DataSet/csv/nunavut-eng.csv';
+        break;
+      case "ON":
+        csv = '../DataSet/csv/ontario-eng.csv';
+        break;
+      case "PE":
+        csv = '../DataSet/csv/prince-edward-island-ile-du-prince-edouard-eng.csv';
+        break;
+      case "QC":
+        csv = '../DataSet/csv/quebec-eng.csv';
+        break;
+      case "SK":
+        csv = '../DataSet/csv/saskatchewan-eng.csv';
+        break;
+      case "YT":
+        csv = '../DataSet/csv/yukon-eng.csv';
+        break;
+    }
+    fs.readFile(csv, 'utf8', function (err,data) {
+      processData(req.params.id, data);
       fs.writeFile(fileName, JSON.stringify(dictCities[req.params.id]), "utf8");
       res.send(JSON.stringify(dictCities[req.params.id]));
     });
