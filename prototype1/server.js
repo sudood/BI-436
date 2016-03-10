@@ -8,12 +8,12 @@ var router = express.Router();
 var port = 9000;
 
 
-var dictCities = [];
+var dictCities = {};
 
-fs.readFile('../DataSet/csv/alberta-test.csv', 'utf8', function (err,data) {
-  processData("AB", data);
-    // res.send(JSON.stringify(res));
-});
+// fs.readFile('../DataSet/csv/alberta-test.csv', 'utf8', function (err,data) {
+//   processData("AB", data);
+//     // res.send(JSON.stringify(res));
+// });
 
 // FOR REQUIRING LOCAL JAVASCRIPT FILES.
 // var algo = require('./astar.js');
@@ -65,7 +65,7 @@ var processData = function (prov, allText) {
   var deferred = Q.defer();
   var allTextLines = allText.split(/\r\n|\n/);
   var headers = allTextLines[0].split(',');
-  var lines = [];
+  var lines = {};
   var provinceSpent = 0;
 
   for (var i = 1; i < allTextLines.length; i++) {
@@ -78,7 +78,7 @@ var processData = function (prov, allText) {
       provinceSpent += parseFloat(tarr[2]);
       if(lines[tarr[0]] == undefined){
         lines[tarr[0]] = {
-          projects: [{"title": tarr[1], "cost": parseFloat(tarr[2])}],
+          projects: [{title: tarr[1], cost: parseFloat(tarr[2])}],
           sum: parseFloat(tarr[2]),
           numApps: 0
         };
@@ -91,12 +91,10 @@ var processData = function (prov, allText) {
       }
     }
   }
-  dictCities[prov] = {"data": lines, "cost": provinceSpent};
+  dictCities[prov] = {data: lines, cost: provinceSpent};
   console.log(JSON.stringify(dictCities[prov]));
-  console.log(dictCities[prov]);
-  // res.send(JSON.stringify(dictCities[prov]));
-  // deferred.resolve(dictCities[prov]);
-  // return deferred.promise;
+  deferred.resolve(dictCities[prov]);
+  return deferred.promise;
 }
 
 // ROUTING
@@ -108,7 +106,7 @@ router.route('/province/:id')
   if (!fs.existsSync(fileName)) {
     fs.readFile('../DataSet/csv/alberta-test.csv', 'utf8', function (err,data) {
       processData("AB", data, res).then(function(res){
-        // res.send(JSON.stringify(res));
+        res.send(JSON.stringify(res));
       });
     });
   }
