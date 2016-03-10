@@ -62,7 +62,6 @@ var dictCities = {};
 // });
 
 var processData = function (prov, allText) {
-  var deferred = Q.defer();
   var allTextLines = allText.split(/\r\n|\n/);
   var headers = allTextLines[0].split(',');
   var lines = {};
@@ -92,9 +91,8 @@ var processData = function (prov, allText) {
     }
   }
   dictCities[prov] = {data: lines, cost: provinceSpent};
-  console.log(JSON.stringify(dictCities[prov]));
-  deferred.resolve(dictCities[prov]);
-  return deferred.promise;
+  // console.log(JSON.stringify(dictCities[prov]));
+  console.log(JSON.stringify(dictCities));
 }
 
 // ROUTING
@@ -105,9 +103,10 @@ router.route('/province/:id')
   var fileName = "../DataSet/json/" + req.params.id + ".json";
   if (!fs.existsSync(fileName)) {
     fs.readFile('../DataSet/csv/alberta-test.csv', 'utf8', function (err,data) {
-      processData("AB", data, res).then(function(res){
-        res.send(JSON.stringify(res));
-      });
+      processData("AB", data);
+      fs.writeFile(fileName, JSON.stringify(dictCities[req.params.id]), "utf8");
+      res.send(JSON.stringify(dictCities));
+      // res.send(JSON.stringify(dictCities[req.params.id]));
     });
   }
   //
