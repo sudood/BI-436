@@ -91,8 +91,6 @@ var processData = function (prov, allText) {
     }
   }
   dictCities[prov] = {data: lines, cost: provinceSpent};
-  // console.log(JSON.stringify(dictCities[prov]));
-  console.log(JSON.stringify(dictCities));
 }
 
 // ROUTING
@@ -102,25 +100,20 @@ router.route('/province/:id')
 .get(function(req, res) {
   var fileName = "../DataSet/json/" + req.params.id + ".json";
   if (!fs.existsSync(fileName)) {
-    fs.readFile('../DataSet/csv/alberta-test.csv', 'utf8', function (err,data) {
+    fs.readFile('../DataSet/csv/alberta-eng.csv', 'utf8', function (err,data) {
       processData("AB", data);
       fs.writeFile(fileName, JSON.stringify(dictCities[req.params.id]), "utf8");
-      res.send(JSON.stringify(dictCities));
-      // res.send(JSON.stringify(dictCities[req.params.id]));
+      res.send(JSON.stringify(dictCities[req.params.id]));
     });
   }
-  //
-  // else {
-  //   fs.readFile('./uwapi_results.json', 'utf8', function (err,data) {
-  //     if (err) {
-  //       res.send(err);
-  //     }
-  //     res.send(data);
-  //   })
-  // }
-  //
-  // // FOR READING IN DATA FROM FILESYSTEM.
-  //   res.send(JSON.stringify(dictCities[req.params.id])    );
+  else{
+      fs.readFile(fileName, 'utf8', function (err,data) {
+      if (err) {
+        res.send(err);
+      }
+      res.send(data);
+    })
+  }
 });
 
 router.route('/all')
