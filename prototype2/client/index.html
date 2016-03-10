@@ -19,14 +19,22 @@
     <div id="map"></div>
     <script>
 	var xmlHttp = new XMLHttpRequest();
-	var URL = "http://127.0.0.1:9000/test.csv";
+	var URL = "http://127.0.0.1:9000/data/AB.json";
     	xmlHttp.open( "GET", URL, false ); 
     	xmlHttp.send( null );
-    	alert(xmlHttp.responseText);
+    	//alert(typeof xmlHttp.responseText);
+    	//alert(xmlHttp.responseText);
+	var AB = JSON.parse(xmlHttp.responseText)
+	//AB has keys: cost, data -> "city name" -> "projects"
+	//alert(AB["cost"]);
 
       // data from: https://www.currentresults.com/Weather-Extremes/Canada/largest-canadian-cities-list.php
       var citymap = {
-        toronto: {
+        Alberta: {
+          center: {lat: 55.0000, lng: -115.0000},
+          population: AB["cost"]/10000
+        },
+        Toronto: {
           center: {lat: 43.700, lng: -79.400},
           population: 5583064
         },
