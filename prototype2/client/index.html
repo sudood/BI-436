@@ -25,23 +25,23 @@
           center: {lat: 43.700, lng: -79.400},
           population: 5583064
         },
-        montreal: {
+        Montreal: {
           center: {lat: 45.5017, lng: -73.5673},
           population: 3824221
         },
-        vancouver: {
+        Vancouver: {
           center: {lat: 49.2827, lng: -123.1207},
           population: 2313328
         },
-        ottawa: {
+        Ottawa: {
           center: {lat: 45.4214, lng: -75.6919},
           population: 1236324
         },
-        calgary: {
+        Calgary: {
           center: {lat: 51.0486, lng: -114.0708},
           population: 1214839
         },
-        edmonton: {
+        Edmonton: {
           center: {lat: 53.5333, lng: -113.5000},
           population: 1159869
         },
@@ -68,14 +68,6 @@
         Halifax: {
           center: {lat: 44.6478, lng: -63.5714},
           population: 390328
-        },
-        sudbury: {
-          center: {lat: 46.4900, lng: -81.0100},
-          population: 3857799
-        },
-        sarnia: {
-          center: {lat: 42.9994, lng: -82.3089},
-          population: 603502
         }
       };
 
@@ -83,7 +75,7 @@
         // Create the map.
         var map = new google.maps.Map(document.getElementById('map'), {
           zoom: 4,
-          center: {lat: 61.000, lng: -95.000},
+          center: {lat: 61.000, lng: -95.000}, // CENTER ON CANADA
           mapTypeId: google.maps.MapTypeId.TERRAIN
         });
 
@@ -102,6 +94,8 @@
             radius: Math.sqrt(citymap[city].population) * 100
           });
 	  google.maps.event.addListener(cityCircle, 'click', function(ev) {
+	  	alert(cityCircle.center);
+		alert(typeof cityCircle.center);
 		window.location.href = "http://127.0.0.1:9000/heatmap.html";
 	  });
         }
