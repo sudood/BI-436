@@ -18,7 +18,12 @@
   <body>
     <div id="map"></div>
     <script>
-      // First, create an object containing LatLng and population for each city.
+	var xmlHttp = new XMLHttpRequest();
+	var URL = "http://127.0.0.1:9000/test.csv";
+    	xmlHttp.open( "GET", URL, false ); 
+    	xmlHttp.send( null );
+    	alert(xmlHttp.responseText);
+
       // data from: https://www.currentresults.com/Weather-Extremes/Canada/largest-canadian-cities-list.php
       var citymap = {
         toronto: {
