@@ -3,22 +3,27 @@ var app = express();
 var server = require('http').Server(app);
 var request = require('request');
 var fs = require("fs");
+var Q = require("q");
 var router = express.Router();
 var port = 9000;
 
 
+var dictCities = [];
+
+fs.readFile('../DataSet/csv/alberta-test.csv', 'utf8', function (err,data) {
+  processData("AB", data);
+    // res.send(JSON.stringify(res));
+});
 
 // FOR REQUIRING LOCAL JAVASCRIPT FILES.
 // var algo = require('./astar.js');
 // var graphDef = require('./graph_definition.js');
 
-var dictCities = [];
-
 // FOR READING IN DATA FROM FILESYSTEM.
-fs.readFile('../DataSet/alberta-eng.csv', 'utf8', function (err,data) {
-  processData("AB", data);
-  // console.log(dictCities["AB"]);
-});
+// fs.readFile('../DataSet/alberta-eng.csv', 'utf8', function (err,data) {
+//   processData("AB", data);
+//   // console.log(dictCities["AB"]);
+// });
 // fs.readFile('../DataSet/british-columbia-colombie-britannique-eng.csv', 'utf8', function (err,data) {
 //   processData("BC", data);
 // });
@@ -56,11 +61,11 @@ fs.readFile('../DataSet/alberta-eng.csv', 'utf8', function (err,data) {
 //   processData("YT", data);
 // });
 
-
-function processData(prov, allText) {
+var processData = function (prov, allText) {
+  var deferred = Q.defer();
   var allTextLines = allText.split(/\r\n|\n/);
   var headers = allTextLines[0].split(',');
-  lines = [];
+  var lines = [];
   var provinceSpent = 0;
 
   for (var i = 1; i < allTextLines.length; i++) {
@@ -73,7 +78,7 @@ function processData(prov, allText) {
       provinceSpent += parseFloat(tarr[2]);
       if(lines[tarr[0]] == undefined){
         lines[tarr[0]] = {
-          projects: [{title: tarr[1], cost: parseFloat(tarr[2])}],
+          projects: [{"title": tarr[1], "cost": parseFloat(tarr[2])}],
           sum: parseFloat(tarr[2]),
           numApps: 0
         };
@@ -86,7 +91,12 @@ function processData(prov, allText) {
       }
     }
   }
-  dictCities[prov] = {data: lines, cost: provinceSpent};
+  dictCities[prov] = {"data": lines, "cost": provinceSpent};
+  console.log(JSON.stringify(dictCities[prov]));
+  console.log(dictCities[prov]);
+  // res.send(JSON.stringify(dictCities[prov]));
+  // deferred.resolve(dictCities[prov]);
+  // return deferred.promise;
 }
 
 // ROUTING
@@ -94,26 +104,26 @@ router.route('/province/:id')
 
 // get example
 .get(function(req, res) {
-
-  // FOR READING IN DATA FROM FILESYSTEM.
-    res.send(JSON.stringify(dictCities[req.params.id]));
-
-  // if (!fs.existsSync("./uwapi_results.json")) {
-  //   request('https://api.uwaterloo.ca/v2/buildings/list.geojson?key=2a7eb4185520ceff7b74992e7df4f55e', function (error, response, body) {
-  //     var BuildingResults = {};
-  //     if (!error && response.statusCode == 200) {
-  //       var inBuildings = JSON.parse(body);
+  var fileName = "../DataSet/json/" + req.params.id + ".json";
+  if (!fs.existsSync(fileName)) {
+    fs.readFile('../DataSet/csv/alberta-test.csv', 'utf8', function (err,data) {
+      processData("AB", data, res).then(function(res){
+        // res.send(JSON.stringify(res));
+      });
+    });
+  }
   //
-  //       for (var ind in inBuildings.features) {
-  //         if (ind != 0) {
-  //           BuildingResults[inBuildings.features[ind].properties.building_code] = {name: inBuildings.features[ind].properties.building_name, coordinates: inBuildings.features[ind].geometry.coordinates};
-  //         }
-  //       }
+  // else {
+  //   fs.readFile('./uwapi_results.json', 'utf8', function (err,data) {
+  //     if (err) {
+  //       res.send(err);
   //     }
-  //     fs.writeFile( "uwapi_results.json", JSON.stringify(BuildingResults), "utf8");
-  //     res.send(JSON.stringify(BuildingResults));
+  //     res.send(data);
   //   })
   // }
+  //
+  // // FOR READING IN DATA FROM FILESYSTEM.
+  //   res.send(JSON.stringify(dictCities[req.params.id])    );
 });
 
 router.route('/all')
