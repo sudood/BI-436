@@ -5,7 +5,6 @@ var request = require('request');
 var fs = require("fs");
 var router = express.Router();
 var port = 9000;
-app.use('/api', router);
 app.use(express.static('client'));
 app.get('/*', function(req, res, next){
   var url = req.url;
@@ -25,6 +24,9 @@ module.exports.listen = function(){
     console.log('Server listening on port', port);
   });
 };
+app.listen(port, function() {
+	console.log("BI-436 Server Listening on Port 9000")
+});
 
 // FOR REQUIRING LOCAL JAVASCRIPT FILES.
 // var algo = require('./astar.js');
