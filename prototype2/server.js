@@ -38,7 +38,7 @@ request("http://www.infrastructure.gc.ca/alt-format/isf-fsi/english-settings-con
   	//console.log(body);
   	parsed = Baby.parse(body);
 	rows = parsed.data;
-	console.log(rows);
+	//console.log(rows);
   }
 });
 
