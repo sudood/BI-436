@@ -1,89 +1,84 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
-  <meta charset="utf-8">
-  <title>Circles</title>
-  <style>
-  html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-  }
-  #map {
-    height: 100%;
-  }
-  </style>
-</head>
-<body>
-  <div id="map"></div>
-  <script>
-  var xmlHttp = new XMLHttpRequest();
-  var URL = "http://127.0.0.1:9000/api/all";
-  xmlHttp.open( "GET", URL, false );
-  xmlHttp.send( null );
-  //alert(typeof xmlHttp.responseText);
-  //alert(xmlHttp.responseText);
-  var DATA = JSON.parse(xmlHttp.responseText)
-  //AB has keys: cost, data -> "city name" -> "projects"
-  //alert(AB["cost"]);
-  debugger;
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Circles</title>
+    <style>
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      #map {
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script>
+	var xmlHttp = new XMLHttpRequest();
+	var URL = "http://127.0.0.1:9000/api/all";
+    	xmlHttp.open( "GET", URL, false );
+    	xmlHttp.send( null );
+	var DATA = JSON.parse(xmlHttp.responseText)
 
-  // data from: https://www.currentresults.com/Weather-Extremes/Canada/largest-canadian-cities-list.php
-  var citymap = {
-    Alberta: {
-      center: {lat: 55.0000, lng: -115.0000},
-      cost: DATA["AB"]["cost"]
-    },
-    BritishColumbia: {
-      center: {lat: 54.0000, lng: -125.0000},
-      cost: DATA["BC"]["cost"]
-    },
-    Manitoba: {
-      center: {lat: 55.0000, lng: -97.0000},
-      cost: DATA["MB"]["cost"]
-    },
-    NewBrunswick: {
-      center: {lat: 46.0000, lng: -66.0000},
-      cost: DATA["NB"]["cost"]
-    },
-    Newfoundland: {
-      center: {lat: 53.0000, lng: -60.0000},
-      cost: DATA["NL"]["cost"]
-    },
-    NovaScotia: {
-      center: {lat: 45.0000, lng: -63.0000},
-      cost: DATA["NS"]["cost"]
-    },
-    NorthwestTerritories: {
-      center: {lat: 66.0000, lng: -119.0000},
-      cost: DATA["NT"]["cost"]
-    },
-    Nunavut: {
-      center: {lat: 65.0000, lng: -95.0000},
-      cost: DATA["NU"]["cost"]
-    },
-    Ontario: {
-      center: {lat: 50.0000, lng: -85.0000},
-      cost: DATA["ON"]["cost"]
-    },
-    PrinceEdwardIsland: {
-      center: {lat: 46.2500, lng: -63.0000},
-      cost: DATA["PE"]["cost"]
-    },
-    Quebec: {
-      center: {lat: 53.0000, lng: -70.0000},
-      cost: DATA["QC"]["cost"]
-    },
-    Saskatchewan: {
-      center: {lat: 55.0000, lng: -106.0000},
-      cost: DATA["SK"]["cost"]
-    },
-    Yukon: {
-      center: {lat: 64.0000, lng: -135.0000},
-      cost: DATA["YT"]["cost"]
-    }
-  };
+      // data from: https://www.currentresults.com/Weather-Extremes/Canada/largest-canadian-cities-list.php
+      var citymap = {
+        AB: {
+          center: {lat: 55.0000, lng: -115.0000},
+          cost: DATA["AB"]["cost"]
+        },
+        BC: {
+          center: {lat: 54.0000, lng: -125.0000},
+          cost: DATA["BC"]["cost"]
+        },
+        MB: {
+          center: {lat: 55.0000, lng: -97.0000},
+          cost: DATA["MB"]["cost"]
+        },
+        NB: {
+          center: {lat: 46.0000, lng: -66.0000},
+          cost: DATA["NB"]["cost"]
+        },
+        NL: {
+          center: {lat: 53.0000, lng: -60.0000},
+          cost: DATA["NL"]["cost"]
+        },
+        NS: {
+          center: {lat: 45.0000, lng: -63.0000},
+          cost: DATA["NS"]["cost"]
+        },
+        NT: {
+          center: {lat: 66.0000, lng: -119.0000},
+          cost: DATA["NT"]["cost"]
+        },
+        NU: {
+          center: {lat: 65.0000, lng: -95.0000},
+          cost: DATA["NU"]["cost"]
+        },
+        ON: {
+          center: {lat: 50.0000, lng: -85.0000},
+          cost: DATA["ON"]["cost"]
+        },
+        PE: {
+          center: {lat: 46.2500, lng: -63.0000},
+          cost: DATA["PE"]["cost"]
+        },
+        QC: {
+          center: {lat: 53.0000, lng: -70.0000},
+          cost: DATA["QC"]["cost"]
+        },
+        SK: {
+          center: {lat: 55.0000, lng: -106.0000},
+          cost: DATA["SK"]["cost"]
+        },
+        YT: {
+          center: {lat: 64.0000, lng: -135.0000},
+          cost: DATA["YT"]["cost"]
+        }
+      };
 
   function initMap() {
     // Create the map.
@@ -116,15 +111,14 @@
       plotCircles(citymap, city).then(function(cityCircle){
         google.maps.event.addListener(cityCircle, 'click', function(ev) {
           // alert(cityCircle.center);
-          alert(cityCircle.radius)
+          alert(cityCircle.radius);
+          alert(cityCircle.heatmap);
           // alert(typeof cityCircle.center);
           // window.location.href = "http://127.0.0.1:9000/heatmaps/AB.html";
         });
       })
       // Add the circle for this city to the map.
     }
-
-
   }
 
 </script>
