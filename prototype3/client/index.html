@@ -22,64 +22,59 @@
 	var URL = "http://127.0.0.1:9000/api/all";
     	xmlHttp.open( "GET", URL, false ); 
     	xmlHttp.send( null );
-    	//alert(typeof xmlHttp.responseText);
-    	//alert(xmlHttp.responseText);
 	var DATA = JSON.parse(xmlHttp.responseText)
-	//AB has keys: cost, data -> "city name" -> "projects"
-	//alert(AB["cost"]);
-	debugger;
 
       // data from: https://www.currentresults.com/Weather-Extremes/Canada/largest-canadian-cities-list.php
       var citymap = {
-        Alberta: {
+        AB: {
           center: {lat: 55.0000, lng: -115.0000},
           cost: DATA["AB"]["cost"]
         },
-        BritishColumbia: {
+        BC: {
           center: {lat: 54.0000, lng: -125.0000},
           cost: DATA["BC"]["cost"]
         },
-        Manitoba: {
+        MB: {
           center: {lat: 55.0000, lng: -97.0000},
           cost: DATA["MB"]["cost"]
         },
-        NewBrunswick: {
+        NB: {
           center: {lat: 46.0000, lng: -66.0000},
           cost: DATA["NB"]["cost"]
         },
-        Newfoundland: {
+        NL: {
           center: {lat: 53.0000, lng: -60.0000},
           cost: DATA["NL"]["cost"]
         },
-        NovaScotia: {
+        NS: {
           center: {lat: 45.0000, lng: -63.0000},
           cost: DATA["NS"]["cost"]
         },
-        NorthwestTerritories: {
+        NT: {
           center: {lat: 66.0000, lng: -119.0000},
           cost: DATA["NT"]["cost"]
         },
-        Nunavut: {
+        NU: {
           center: {lat: 65.0000, lng: -95.0000},
           cost: DATA["NU"]["cost"]
         },
-        Ontario: {
+        ON: {
           center: {lat: 50.0000, lng: -85.0000},
           cost: DATA["ON"]["cost"]
         },
-        PrinceEdwardIsland: {
+        PE: {
           center: {lat: 46.2500, lng: -63.0000},
           cost: DATA["PE"]["cost"]
         },
-        Quebec: {
+        QC: {
           center: {lat: 53.0000, lng: -70.0000},
           cost: DATA["QC"]["cost"]
         },
-        Saskatchewan: {
+        SK: {
           center: {lat: 55.0000, lng: -106.0000},
           cost: DATA["SK"]["cost"]
         },
-        Yukon: {
+        YT: {
           center: {lat: 64.0000, lng: -135.0000},
           cost: DATA["YT"]["cost"]
         }
@@ -98,6 +93,7 @@
         for (var city in citymap) {
           // Add the circle for this city to the map.
           var cityCircle = new google.maps.Circle({
+            heatmap: "http://127.0.0.1:9000/heatmaps/" + city + ".html",
             strokeColor: '#FF0000',
             strokeOpacity: 0.8,
             strokeWeight: 2,
@@ -108,9 +104,8 @@
             radius: Math.sqrt(citymap[city].cost) * 7
           });
 	  google.maps.event.addListener(cityCircle, 'click', function(ev) {
-	  	//alert(cityCircle.center);
-		//alert(typeof cityCircle.center);
-		window.location.href = "http://127.0.0.1:9000/heatmaps/AB.html";
+	        alert(cityCircle.heatmap);
+	        window.location.href = cityCircle.heatmap;
 	  });
         }
       }
