@@ -8,12 +8,96 @@ var router = express.Router();
 var port = 9000;
 
 
-var dictCities = {};
 // FOR REQUIRING LOCAL JAVASCRIPT FILES.
-// var algo = require('./astar.js');
-// var graphDef = require('./graph_definition.js');
+var dictCities = {};
+var started = false;
+
+var startUp = function(){
+  var provinces = ["AB", "BC", "MB", "NB", "NL", "NT", "NS", "NU", "ON", "PE", "QC", "SK", "YT"];
+  var the_promises = [];
+
+  for (var i = 0; i < provinces.length; i++){
+    var csv;
+    var fileName = "../DataSet/json/" + provinces[i] + ".json";
+    var temp = provinces[i];
+    if (!fs.existsSync(fileName)) {
+      switch (provinces[i]) {
+        case "AB":
+          csv = '../DataSet/csv/alberta-eng.csv';
+          break;
+        case "BC":
+          csv = '../DataSet/csv/british-columbia-colombie-britannique-eng.csv';
+          break;
+        case "MB":
+          csv = '../DataSet/csv/manitoba-eng.csv';
+          break;
+        case "NB":
+          csv = '../DataSet/csv/new-brunswick-nouveau-brunswick-eng.csv';
+          break;
+        case "NL":
+          csv = '../DataSet/csv/newfoundland-and-labrador-terre-neuve-et-labrador-eng.csv';
+          break;
+        case "NT":
+          csv = '../DataSet/csv/northwest-territories-territoires-du-nord-ouest-eng.csv';
+          break;
+        case "NS":
+          csv = '../DataSet/csv/nova-scotia-nouvelle-ecosse-eng.csv';
+          break;
+        case "NU":
+          csv = '../DataSet/csv/nunavut-eng.csv';
+          break;
+        case "ON":
+          csv = '../DataSet/csv/ontario-eng.csv';
+          break;
+        case "PE":
+          csv = '../DataSet/csv/prince-edward-island-ile-du-prince-edouard-eng.csv';
+          break;
+        case "QC":
+          csv = '../DataSet/csv/quebec-eng.csv';
+          break;
+        case "SK":
+          csv = '../DataSet/csv/saskatchewan-eng.csv';
+          break;
+        case "YT":
+          csv = '../DataSet/csv/yukon-eng.csv';
+          break;
+      }
+      the_promises.push(writeData(temp, csv, fileName));
+    }
+    else{
+      the_promises.push(readData(temp, fileName));
+    }
+  }
+  return Q.all(the_promises).then(function(){
+    dictCities["total"] = 0;
+    Object.keys(dictCities).forEach(function(key) {
+      if(key != "total"){
+        dictCities["total"] += parseFloat(dictCities[key].cost);
+      }
+    });
+  });
+}
 
 // FOR READING IN DATA FROM FILESYSTEM.
+
+var readData = function(temp, json) {
+  var deferred = Q.defer();
+  fs.readFile(json, 'utf8', function (err,data) {
+    dictCities[temp] = JSON.parse(data);
+    deferred.resolve(); // fulfills the promise with `data` as the value
+  })
+  return deferred.promise; // the promise is returned
+}
+
+var writeData = function(temp, csv, json){
+  var deferred = Q.defer();
+  fs.readFile(csv, 'utf8', function (err,data) {
+    processData(temp, data);
+    fs.writeFile(json, JSON.stringify(dictCities[temp]), "utf8");
+    deferred.resolve(); // fulfills the promise with `data` as the value
+  });
+  return deferred.promise;
+}
 
 var processData = function (prov, allText) {
   var allTextLines = allText.split(/\r\n|\n/);
@@ -52,62 +136,13 @@ router.route('/province/:id')
 
 // get example
 .get(function(req, res) {
-  var fileName = "../DataSet/json/" + req.params.id + ".json";
-  var csv;
-  if (!fs.existsSync(fileName)) {
-    switch (req.params.id) {
-      case "AB":
-        csv = '../DataSet/csv/alberta-eng.csv';
-        break;
-      case "BC":
-        csv = '../DataSet/csv/british-columbia-colombie-britannique-eng.csv';
-        break;
-      case "MB":
-        csv = '../DataSet/csv/manitoba-eng.csv';
-        break;
-      case "NB":
-        csv = '../DataSet/csv/new-brunswick-nouveau-brunswick-eng.csv';
-        break;
-      case "NL":
-        csv = '../DataSet/csv/newfoundland-and-labrador-terre-neuve-et-labrador-eng.csv';
-        break;
-      case "NT":
-        csv = '../DataSet/csv/northwest-territories-territoires-du-nord-ouest-eng.csv';
-        break;
-      case "NS":
-        csv = '../DataSet/csv/nova-scotia-nouvelle-ecosse-eng.csv';
-        break;
-      case "NU":
-        csv = '../DataSet/csv/nunavut-eng.csv';
-        break;
-      case "ON":
-        csv = '../DataSet/csv/ontario-eng.csv';
-        break;
-      case "PE":
-        csv = '../DataSet/csv/prince-edward-island-ile-du-prince-edouard-eng.csv';
-        break;
-      case "QC":
-        csv = '../DataSet/csv/quebec-eng.csv';
-        break;
-      case "SK":
-        csv = '../DataSet/csv/saskatchewan-eng.csv';
-        break;
-      case "YT":
-        csv = '../DataSet/csv/yukon-eng.csv';
-        break;
-    }
-    fs.readFile(csv, 'utf8', function (err,data) {
-      processData(req.params.id, data);
-      fs.writeFile(fileName, JSON.stringify(dictCities[req.params.id]), "utf8");
-      res.send(JSON.stringify(dictCities[req.params.id]));
-    });
+  if(started){
+    res.send(JSON.stringify(dictCities[req.params.id]));
   }
   else{
-      fs.readFile(fileName, 'utf8', function (err,data) {
-      if (err) {
-        res.send(err);
-      }
-      res.send(data);
+    startUp().then(function(){
+      started = true;
+      res.send(JSON.stringify(dictCities[req.params.id]));
     })
   }
 });
@@ -116,7 +151,15 @@ router.route('/all')
 
 // get example
 .get(function(req, res) {
-  res.send(JSON.stringify(dictCities));
+  if(started){
+    res.send(JSON.stringify(dictCities));
+  }
+  else{
+    startUp().then(function(){
+      started = true;
+      res.send(JSON.stringify(dictCities));
+    })
+  }
 });
 
 // router.route('/contact-form')
