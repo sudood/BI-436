@@ -69,10 +69,12 @@ var startUp = function(){
     }
   }
   return Q.all(the_promises).then(function(){
-    dictCities["total"] = 0;
+    dictCities["totalCost"] = 0;
+    dictCities["totalProj"] = 0;
     Object.keys(dictCities).forEach(function(key) {
-      if(key != "total"){
-        dictCities["total"] += parseFloat(dictCities[key].cost);
+      if(key != "totalCost" && key != "totalProj"){
+        dictCities["totalCost"] += parseFloat(dictCities[key].cost);
+        dictCities["totalProj"] += parseFloat(dictCities[key].proj);
       }
     });
   });
@@ -104,6 +106,7 @@ var processData = function (prov, allText) {
   var headers = allTextLines[0].split(',');
   var lines = {};
   var provinceSpent = 0;
+  var totalApps = 0;
 
   for (var i = 1; i < allTextLines.length; i++) {
     var data = allTextLines[i].split(',');
@@ -119,16 +122,18 @@ var processData = function (prov, allText) {
           sum: parseFloat(tarr[2]),
           numApps: 0
         };
+	totalApps++;
       }
       else{
         // do something for existing ones.
         lines[tarr[0]].projects.push({title: tarr[1], cost: parseFloat(tarr[2])});
         lines[tarr[0]].sum += parseFloat(tarr[2]);
         lines[tarr[0]].numApps++;
+        totalApps++;
       }
     }
   }
-  dictCities[prov] = {data: lines, cost: provinceSpent.toFixed(2)};
+  dictCities[prov] = {data: lines, cost: provinceSpent.toFixed(2), proj: totalApps};
 }
 
 // ROUTING
