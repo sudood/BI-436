@@ -208,5 +208,5 @@ module.exports.listen = function(){
   });
 };
 app.listen(port, function() {
-  console.log("BI-436 Server Listening on Port 9000")
+  console.log("BI-436 Server Listening: http://127.0.0.1:9000")
 });
