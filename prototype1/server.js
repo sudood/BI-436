@@ -120,7 +120,7 @@ var processData = function (prov, allText) {
         lines[tarr[0]] = {
           projects: [{title: tarr[1], cost: parseFloat(tarr[2])}],
           sum: parseFloat(tarr[2]),
-          numApps: 0
+          numApps: 1
         };
 	totalApps++;
       }
