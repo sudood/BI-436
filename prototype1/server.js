@@ -71,17 +71,18 @@ var startUp = function(){
   return Q.all(the_promises).then(function(){
     dictCities["totalCost"] = 0;
     dictCities["totalProj"] = 0;
+    dictCities["totalCitiesReq"] = 0;
     Object.keys(dictCities).forEach(function(key) {
-      if(key != "totalCost" && key != "totalProj"){
+      if(key != "totalCost" && key != "totalProj" && key !="totalCitiesReq"){
         dictCities["totalCost"] += parseFloat(dictCities[key].cost);
         dictCities["totalProj"] += parseFloat(dictCities[key].proj);
+        dictCities["totalCitiesReq"] += parseFloat(dictCities[key].numCities);
       }
     });
   });
 }
 
 // FOR READING IN DATA FROM FILESYSTEM.
-
 var readData = function(temp, json) {
   var deferred = Q.defer();
   fs.readFile(json, 'utf8', function (err,data) {
@@ -94,9 +95,11 @@ var readData = function(temp, json) {
 var writeData = function(temp, csv, json){
   var deferred = Q.defer();
   fs.readFile(csv, 'utf8', function (err,data) {
-    processData(temp, data);
-    fs.writeFile(json, JSON.stringify(dictCities[temp]), "utf8");
-    deferred.resolve(); // fulfills the promise with `data` as the value
+    processData(temp, data).then(function(){
+      console.log("Hell0");
+      fs.writeFile(json, JSON.stringify(dictCities[temp]), "utf8");
+      deferred.resolve(); // fulfills the promise with `data` as the value
+    })
   });
   return deferred.promise;
 }
@@ -105,8 +108,8 @@ var processData = function (prov, allText) {
   var allTextLines = allText.split(/\r\n|\n/);
   var headers = allTextLines[0].split(',');
   var lines = {};
-  var provinceSpent = 0;
-  var totalApps = 0;
+  var provinceSpent = 0; var totalApps = 0; var provCities = 0;
+  var promises = [];
 
   for (var i = 1; i < allTextLines.length; i++) {
     var data = allTextLines[i].split(',');
@@ -117,12 +120,14 @@ var processData = function (prov, allText) {
       }
       provinceSpent += parseFloat(tarr[2]);
       if(lines[tarr[0]] == undefined){
+        promises.push(grepCoord(tarr[0], prov));
         lines[tarr[0]] = {
           projects: [{title: tarr[1], cost: parseFloat(tarr[2])}],
           sum: parseFloat(tarr[2]),
-          numApps: 1
+          numApps: 1,
         };
-	totalApps++;
+        totalApps++;
+        provCities++;
       }
       else{
         // do something for existing ones.
@@ -133,7 +138,77 @@ var processData = function (prov, allText) {
       }
     }
   }
-  dictCities[prov] = {data: lines, cost: provinceSpent.toFixed(2), proj: totalApps};
+  dictCities[prov] = {data: lines, cost: provinceSpent.toFixed(2), proj: totalApps, numCities: provCities};
+  return Q.all(promises).then(function(){
+    for (var i in promises){
+      var parsed = JSON.parse(promises[i]).geonames[0];
+      console.log(i);
+      dictCities[prov].data[parsed.name].lat = parseFloat(parsed.lat);
+      dictCities[prov].data[parsed.name].lng = parseFloat(parsed.lng);
+      dictCities[prov].data[parsed.name].pop = parsed.population;
+      // data is being stored here but I can't return it 'cause the queue is getting stuck.
+    }
+  })
+}
+
+var grepCoord = function(city, prov){
+  var deferred = Q.defer();
+
+  var adminCode1;
+  // Get correct province.
+  switch (prov) {
+    case "AB":
+      adminCode1 = "01";
+      break;
+    case "BC":
+      adminCode1 = "02";
+      break;
+    case "MB":
+      adminCode1 = "03";
+      break;
+    case "NB":
+      adminCode1 = "04";
+      break;
+    case "NL":
+      adminCode1 = "05";
+      break;
+    case "NT":
+      adminCode1 = "13";
+      break;
+    case "NS":
+      adminCode1 = "07";
+      break;
+    case "NU":
+      adminCode1 = "14";
+      break;
+    case "ON":
+      adminCode1 = "08";
+      break;
+    case "PE":
+      adminCode1 = "09";
+      break;
+    case "QC":
+      adminCode1 = "10";
+      break;
+    case "SK":
+      adminCode1 = "11";
+      break;
+    case "YT":
+      adminCode1 = "12";
+      break;
+  }
+
+  var query = "http://api.geonames.org/searchJSON?name_equals=" + city + "&adminCode1=" + adminCode1 + "&maxRows=1&country=CA&username=bi436";
+  request(query, function(error, response, body){
+    if(!error && response.statusCode == 200){
+      deferred.resolve(body);
+    }
+    else{
+      console.log(body);
+      deferred.resolve(body);
+    }
+  })
+  return deferred.promise;
 }
 
 // ROUTING
@@ -186,7 +261,7 @@ router.route('/all')
 
 // test route to make sure everything is working (accessed at GET http://localhost:8080/api)
 router.get('/', function(req, res) {
- res.json({ message: 'hooray! welcome to our api!' });
+  res.json({ message: 'hooray! welcome to our api!'});
 });
 
 // REGISTER OUR ROUTES -------------------------------
