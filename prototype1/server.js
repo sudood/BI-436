@@ -23,44 +23,44 @@ var startUp = function(){
     if (!fs.existsSync(fileName)) {
       switch (provinces[i]) {
         case "AB":
-          csv = '../DataSet/csv/alberta-eng.csv';
-          break;
+        csv = '../DataSet/csv/alberta-eng.csv';
+        break;
         case "BC":
-          csv = '../DataSet/csv/british-columbia-colombie-britannique-eng.csv';
-          break;
+        csv = '../DataSet/csv/british-columbia-colombie-britannique-eng.csv';
+        break;
         case "MB":
-          csv = '../DataSet/csv/manitoba-eng.csv';
-          break;
+        csv = '../DataSet/csv/manitoba-eng.csv';
+        break;
         case "NB":
-          csv = '../DataSet/csv/new-brunswick-nouveau-brunswick-eng.csv';
-          break;
+        csv = '../DataSet/csv/new-brunswick-nouveau-brunswick-eng.csv';
+        break;
         case "NL":
-          csv = '../DataSet/csv/newfoundland-and-labrador-terre-neuve-et-labrador-eng.csv';
-          break;
+        csv = '../DataSet/csv/newfoundland-and-labrador-terre-neuve-et-labrador-eng.csv';
+        break;
         case "NT":
-          csv = '../DataSet/csv/northwest-territories-territoires-du-nord-ouest-eng.csv';
-          break;
+        csv = '../DataSet/csv/northwest-territories-territoires-du-nord-ouest-eng.csv';
+        break;
         case "NS":
-          csv = '../DataSet/csv/nova-scotia-nouvelle-ecosse-eng.csv';
-          break;
+        csv = '../DataSet/csv/nova-scotia-nouvelle-ecosse-eng.csv';
+        break;
         case "NU":
-          csv = '../DataSet/csv/nunavut-eng.csv';
-          break;
+        csv = '../DataSet/csv/nunavut-eng.csv';
+        break;
         case "ON":
-          csv = '../DataSet/csv/ontario-eng.csv';
-          break;
+        csv = '../DataSet/csv/ontario-eng.csv';
+        break;
         case "PE":
-          csv = '../DataSet/csv/prince-edward-island-ile-du-prince-edouard-eng.csv';
-          break;
+        csv = '../DataSet/csv/prince-edward-island-ile-du-prince-edouard-eng.csv';
+        break;
         case "QC":
-          csv = '../DataSet/csv/quebec-eng.csv';
-          break;
+        csv = '../DataSet/csv/quebec-eng.csv';
+        break;
         case "SK":
-          csv = '../DataSet/csv/saskatchewan-eng.csv';
-          break;
+        csv = '../DataSet/csv/saskatchewan-eng.csv';
+        break;
         case "YT":
-          csv = '../DataSet/csv/yukon-eng.csv';
-          break;
+        csv = '../DataSet/csv/yukon-eng.csv';
+        break;
       }
       the_promises.push(writeData(temp, csv, fileName));
     }
@@ -92,63 +92,63 @@ var readData = function(temp, json) {
   return deferred.promise; // the promise is returned
 }
 
+// Does not work in bulk
 var writeData = function(temp, csv, json){
-  var deferred = Q.defer();
-  fs.readFile(csv, 'utf8', function (err,data) {
-    processData(temp, data).then(function(){
-      console.log("Hell0");
+  var deferredWD = Q.defer();
+  fs.readFile(csv, 'utf8', function (err,data1) {
+    var allTextLines = data1.split(/\r\n|\n/);
+    var headers = allTextLines[0].split(',');
+    var lines = {};
+    var provinceSpent = 0; var totalApps = 0; var provCities = 0;
+    var wcPromises = [];
+
+    for (var i = 1; i < allTextLines.length; i++) {
+      var data = allTextLines[i].split(',');
+      if (data.length == headers.length) {
+        var tarr = [];
+        for (var j = 0; j < headers.length; j++) {
+          tarr.push(data[j]);
+        }
+        provinceSpent += parseFloat(tarr[2]);
+        if(lines[tarr[0]] == undefined){
+          wcPromises.push(grepCoord(tarr[0], temp));
+          lines[tarr[0]] = {
+            projects: [{title: tarr[1], cost: parseFloat(tarr[2])}],
+            sum: parseFloat(tarr[2]),
+            numApps: 1
+          };
+          totalApps++;
+          provCities++;
+        }
+        else{
+          // do something for existing ones.
+          lines[tarr[0]].projects.push({title: tarr[1], cost: parseFloat(tarr[2])});
+          lines[tarr[0]].sum += parseFloat(tarr[2]);
+          lines[tarr[0]].numApps++;
+          totalApps++;
+        }
+      }
+    }
+
+    dictCities[temp] = {data: lines, cost: provinceSpent.toFixed(2), proj: totalApps, numCities: provCities};
+    Q.all(wcPromises).then(function(greppedPromises){
+      var deferred = Q.defer();
+      for (var i in greppedPromises){
+        debugger;
+        var parsed = JSON.parse(greppedPromises[i]).geonames[0];
+        dictCities[temp].data[parsed.toponymName].lat = parseFloat(parsed.lat);
+        dictCities[temp].data[parsed.toponymName].lng = parseFloat(parsed.lng);
+        dictCities[temp].data[parsed.toponymName].pop = parsed.population;
+        // data is being stored here but I can't return it 'cause the queue is getting stuck.
+      }
+      deferred.resolve();
+      return deferred.promise;
+    }).then(function(){
       fs.writeFile(json, JSON.stringify(dictCities[temp]), "utf8");
-      deferred.resolve(); // fulfills the promise with `data` as the value
+      deferredWD.resolve();
+      return deferredWD.promise;
     })
   });
-  return deferred.promise;
-}
-
-var processData = function (prov, allText) {
-  var allTextLines = allText.split(/\r\n|\n/);
-  var headers = allTextLines[0].split(',');
-  var lines = {};
-  var provinceSpent = 0; var totalApps = 0; var provCities = 0;
-  var promises = [];
-
-  for (var i = 1; i < allTextLines.length; i++) {
-    var data = allTextLines[i].split(',');
-    if (data.length == headers.length) {
-      var tarr = [];
-      for (var j = 0; j < headers.length; j++) {
-        tarr.push(data[j]);
-      }
-      provinceSpent += parseFloat(tarr[2]);
-      if(lines[tarr[0]] == undefined){
-        promises.push(grepCoord(tarr[0], prov));
-        lines[tarr[0]] = {
-          projects: [{title: tarr[1], cost: parseFloat(tarr[2])}],
-          sum: parseFloat(tarr[2]),
-          numApps: 1,
-        };
-        totalApps++;
-        provCities++;
-      }
-      else{
-        // do something for existing ones.
-        lines[tarr[0]].projects.push({title: tarr[1], cost: parseFloat(tarr[2])});
-        lines[tarr[0]].sum += parseFloat(tarr[2]);
-        lines[tarr[0]].numApps++;
-        totalApps++;
-      }
-    }
-  }
-  dictCities[prov] = {data: lines, cost: provinceSpent.toFixed(2), proj: totalApps, numCities: provCities};
-  return Q.all(promises).then(function(){
-    for (var i in promises){
-      var parsed = JSON.parse(promises[i]).geonames[0];
-      console.log(i);
-      dictCities[prov].data[parsed.name].lat = parseFloat(parsed.lat);
-      dictCities[prov].data[parsed.name].lng = parseFloat(parsed.lng);
-      dictCities[prov].data[parsed.name].pop = parsed.population;
-      // data is being stored here but I can't return it 'cause the queue is getting stuck.
-    }
-  })
 }
 
 var grepCoord = function(city, prov){
@@ -158,53 +158,54 @@ var grepCoord = function(city, prov){
   // Get correct province.
   switch (prov) {
     case "AB":
-      adminCode1 = "01";
-      break;
+    adminCode1 = "01";
+    break;
     case "BC":
-      adminCode1 = "02";
-      break;
+    adminCode1 = "02";
+    break;
     case "MB":
-      adminCode1 = "03";
-      break;
+    adminCode1 = "03";
+    break;
     case "NB":
-      adminCode1 = "04";
-      break;
+    adminCode1 = "04";
+    break;
     case "NL":
-      adminCode1 = "05";
-      break;
+    adminCode1 = "05";
+    break;
     case "NT":
-      adminCode1 = "13";
-      break;
+    adminCode1 = "13";
+    break;
     case "NS":
-      adminCode1 = "07";
-      break;
+    adminCode1 = "07";
+    break;
     case "NU":
-      adminCode1 = "14";
-      break;
+    adminCode1 = "14";
+    break;
     case "ON":
-      adminCode1 = "08";
-      break;
+    adminCode1 = "08";
+    break;
     case "PE":
-      adminCode1 = "09";
-      break;
+    adminCode1 = "09";
+    break;
     case "QC":
-      adminCode1 = "10";
-      break;
+    adminCode1 = "10";
+    break;
     case "SK":
-      adminCode1 = "11";
-      break;
+    adminCode1 = "11";
+    break;
     case "YT":
-      adminCode1 = "12";
-      break;
+    adminCode1 = "12";
+    break;
   }
 
-  var query = "http://api.geonames.org/searchJSON?name_equals=" + city + "&adminCode1=" + adminCode1 + "&maxRows=1&country=CA&username=bi436";
+  var query = "http://api.geonames.org/searchJSON?name_startsWith=" + city + "&adminCode1=" + adminCode1 + "&maxRows=1&country=CA&username=bi436";
   request(query, function(error, response, body){
     if(!error && response.statusCode == 200){
       deferred.resolve(body);
     }
     else{
-      console.log(body);
+      debugger;
+      console.log("Broken" + body);
       deferred.resolve(body);
     }
   })
