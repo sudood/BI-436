@@ -136,12 +136,15 @@ var writeData = function(temp, csv, json){
       for (var i in greppedPromises){
         debugger;
         var parsed = JSON.parse(greppedPromises[i]).geonames[0];
-        dictCities[temp].data[parsed.toponymName].lat = parseFloat(parsed.lat);
-        dictCities[temp].data[parsed.toponymName].lng = parseFloat(parsed.lng);
-        dictCities[temp].data[parsed.toponymName].pop = parsed.population;
+        if(parsed != undefined){
+          dictCities[temp].data[parsed.toponymName].lat = parseFloat(parsed.lat);
+          dictCities[temp].data[parsed.toponymName].lng = parseFloat(parsed.lng);
+          dictCities[temp].data[parsed.toponymName].pop = parsed.population;
+        }
         // data is being stored here but I can't return it 'cause the queue is getting stuck.
       }
       deferred.resolve();
+      debugger;
       return deferred.promise;
     }).then(function(){
       fs.writeFile(json, JSON.stringify(dictCities[temp]), "utf8");
@@ -198,7 +201,7 @@ var grepCoord = function(city, prov){
     break;
   }
 
-  var query = "http://api.geonames.org/searchJSON?name_startsWith=" + city + "&adminCode1=" + adminCode1 + "&maxRows=1&country=CA&username=bi436";
+  var query = "http://api.geonames.org/searchJSON?name_startsWith=" + city + "&adminCode1=" + adminCode1 + "&featureClass=P&maxRows=1&country=CA&username=bi436";
   request(query, function(error, response, body){
     if(!error && response.statusCode == 200){
       deferred.resolve(body);
