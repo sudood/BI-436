@@ -2,12 +2,15 @@ html, body {
   height: 100%;
   margin: 0;
   padding: 0;
+  background-color: black;
+  color: white;
 }
 h1{
 	text-align:center;
+	color: white;
 }
 #map {
-  height: 80%;
+  height: 75%;
 }
 #menu {
   margin-left: 35%;
