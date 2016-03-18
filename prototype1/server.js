@@ -136,13 +136,14 @@ var writeData = function(temp, csv, json){
         fs.writeFile(json, JSON.stringify(dictCities[temp]), "utf8");
         deferredWD.resolve();
         return deferredWD.promise;
+      });
     });
   });
 }
 
 var receiveCoord = function(prov, coordPromises){
   var deferred = [];
-  for (var i in greppedPromises){
+  for (var i in coordPromises){
     var deferredP = Q.defer();
     var parsed = JSON.parse(coordPromises[i]).geonames[0];
     if(parsed != undefined){
