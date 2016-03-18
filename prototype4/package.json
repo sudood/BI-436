@@ -1,0 +1,24 @@
+{
+  "name": "BI-436",
+  "version": "0.0.1",
+  "main": "index.js",
+  "description": "MSCI436 2016.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sudood/BI-436.git"
+  },
+  "author": "Brianna Horton, Matt Rizzo, Eric Wong",
+  "license": "MIT",
+  "homepage": "https://github.com/sudood/BI-436#readme",
+  "dependencies": {
+    "express": "^4.10.0",
+    "fs": "0.0.2",
+    "nodemailer": "^2.2.1",
+    "nodemon": "latest",
+    "q": "^1.4.1",
+    "request": "^2.69.0"
+  },
+  "scripts": {
+    "start": "node index.js"
+  }
+}
