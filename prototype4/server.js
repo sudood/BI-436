@@ -146,12 +146,6 @@ var receiveCoord = function(prov, coordPromises){
   for (var i in coordPromises){
     var deferredP = Q.defer();
     var parsed = JSON.parse(coordPromises[i]).geonames[0];
-    if(i == 150){
-      debugger;
-    }
-    if(i >= 300){
-      debugger;
-    }
     if(parsed != undefined){
       dictCities[prov].data[parsed.toponymName].lat = parseFloat(parsed.lat);
       dictCities[prov].data[parsed.toponymName].lng = parseFloat(parsed.lng);
