@@ -132,26 +132,28 @@ var writeData = function(temp, csv, json){
 
     dictCities[temp] = {data: lines, cost: provinceSpent.toFixed(2), proj: totalApps, numCities: provCities};
     Q.all(wcPromises).then(function(greppedPromises){
-      var deferred = Q.defer();
-      for (var i in greppedPromises){
-        debugger;
-        var parsed = JSON.parse(greppedPromises[i]).geonames[0];
-        if(parsed != undefined){
-          dictCities[temp].data[parsed.toponymName].lat = parseFloat(parsed.lat);
-          dictCities[temp].data[parsed.toponymName].lng = parseFloat(parsed.lng);
-          dictCities[temp].data[parsed.toponymName].pop = parsed.population;
-        }
-        // data is being stored here but I can't return it 'cause the queue is getting stuck.
-      }
-      deferred.resolve();
-      debugger;
-      return deferred.promise;
-    }).then(function(){
-      fs.writeFile(json, JSON.stringify(dictCities[temp]), "utf8");
-      deferredWD.resolve();
-      return deferredWD.promise;
-    })
+      receiveCoord(temp, greppedPromises).then(function(){
+        fs.writeFile(json, JSON.stringify(dictCities[temp]), "utf8");
+        deferredWD.resolve();
+        return deferredWD.promise;
+    });
   });
+}
+
+var receiveCoord = function(prov, coordPromises){
+  var deferred = [];
+  for (var i in greppedPromises){
+    var deferredP = Q.defer();
+    var parsed = JSON.parse(coordPromises[i]).geonames[0];
+    if(parsed != undefined){
+      dictCities[prov].data[parsed.toponymName].lat = parseFloat(parsed.lat);
+      dictCities[prov].data[parsed.toponymName].lng = parseFloat(parsed.lng);
+      dictCities[prov].data[parsed.toponymName].pop = parsed.population;
+    }
+    deferredP.resolve();
+    deferred.push(deferredP);
+  }
+  return Q.all(deferred);
 }
 
 var grepCoord = function(city, prov){
