@@ -133,7 +133,6 @@ var writeData = function(temp, csv, json){
     dictCities[temp] = {data: lines, cost: provinceSpent.toFixed(2), proj: totalApps, numCities: provCities};
     Q.all(wcPromises).then(function(greppedPromises){
       receiveCoord(temp, greppedPromises).then(function(){
-        debugger;
         fs.writeFile(json, JSON.stringify(dictCities[temp]), "utf8");
         deferredWD.resolve();
         return deferredWD.promise;
@@ -147,9 +146,6 @@ var receiveCoord = function(prov, coordPromises){
   for (var i in coordPromises){
     var deferredP = Q.defer();
     var parsed = JSON.parse(coordPromises[i]).geonames[0];
-    if(i >= 190){
-      debugger;
-    }
     if(parsed != undefined){
       if(dictCities[prov].data[parsed.name] != undefined){
         dictCities[prov].data[parsed.name].lat = parseFloat(parsed.lat);
@@ -215,7 +211,7 @@ var grepCoord = function(city, prov){
     break;
   }
 
-  var query = "http://api.geonames.org/searchJSON?name_startsWith=" + city + "&adminCode1=" + adminCode1 + "&featureClass=P&orderby=population&maxRows=1&country=CA&username=bi436";
+  var query = "http://api.geonames.org/searchJSON?name_equals=" + city + "&adminCode1=" + adminCode1 + "&featureClass=P&orderby=population&maxRows=1&country=CA&username=bi436";
   request(query, function(error, response, body){
     if(!error && response.statusCode == 200){
       deferred.resolve(body);
