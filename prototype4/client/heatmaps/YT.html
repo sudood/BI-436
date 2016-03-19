@@ -3,40 +3,9 @@
   <head>
     <meta charset="utf-8">
     <title>Heatmaps</title>
-    <style>
-      html, body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-      }
-      #map {
-        height: 100%;
-      }
-      #floating-panel {
-        position: absolute;
-        top: 10px;
-        left: 25%;
-        z-index: 5;
-        background-color: #fff;
-        padding: 5px;
-        border: 1px solid #999;
-        text-align: center;
-        font-family: 'Roboto','sans-serif';
-        line-height: 30px;
-        padding-left: 10px;
-      }
-      #floating-panel {
-        background-color: #fff;
-        border: 1px solid #999;
-        left: 25%;
-        padding: 5px;
-        position: absolute;
-        top: 10px;
-        z-index: 5;
-      }
-    </style>
+    <link rel="stylesheet" type="text/css" href="../css/style.css">
+    <script src="../js/DATA.js"></script>
   </head>
-
   <body>
     <div id="floating-panel">
       <button onclick="toggleHeatmap()">Toggle Heatmap</button>
@@ -44,7 +13,7 @@
       <button onclick="changeRadius()">Change radius</button>
       <button onclick="changeOpacity()">Change opacity</button>
     </div>
-    <div id="map"></div>
+    <div id="heatmap"></div>
     <script>
 
       // This example requires the Visualization library. Include the libraries=visualization
@@ -54,9 +23,9 @@
       var map, heatmap;
 
       function initMap() {
-        map = new google.maps.Map(document.getElementById('map'), {
+        map = new google.maps.Map(document.getElementById('heatmap'), {
           zoom: 5,
-          center: {lat: 55.0000, lng: -115.0000},
+          center: {lat: 64.0000, lng: -135.0000},
           mapTypeId: google.maps.MapTypeId.SATELLITE
         });
 
@@ -98,11 +67,17 @@
         heatmap.set('opacity', heatmap.get('opacity') ? null : 0.2);
       }
 
-      // Heatmap data: 500 Points
       function getPoints() {
-        return [
-          new google.maps.LatLng(53.5333, -113.5000)
-        ];
+	var lat_long_list = [];
+	for (var city in DATA['YT']['data']){
+		var lat = DATA["YT"]["data"][city]["lat"];
+		var lng = DATA["YT"]["data"][city]["lng"];
+		if (lat && lng){
+			var map_item = new google.maps.LatLng(lat, lng);
+			lat_long_list.push(map_item);
+		}
+	}
+	return lat_long_list;
       }
     </script>
     <script async defer

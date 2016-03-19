@@ -25,7 +25,7 @@
       function initMap() {
         map = new google.maps.Map(document.getElementById('heatmap'), {
           zoom: 5,
-          center: {lat: 55.0000, lng: -115.0000},
+          center: {lat: 66.0000, lng: -119.0000},
           mapTypeId: google.maps.MapTypeId.SATELLITE
         });
 
@@ -69,9 +69,9 @@
 
       function getPoints() {
 	var lat_long_list = [];
-	for (var city in DATA['AB']['data']){
-		var lat = DATA["AB"]["data"][city]["lat"];
-		var lng = DATA["AB"]["data"][city]["lng"];
+	for (var city in DATA['NT']['data']){
+		var lat = DATA["NT"]["data"][city]["lat"];
+		var lng = DATA["NT"]["data"][city]["lng"];
 		if (lat && lng){
 			var map_item = new google.maps.LatLng(lat, lng);
 			lat_long_list.push(map_item);

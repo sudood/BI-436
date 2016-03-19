@@ -103,8 +103,7 @@
 	    for (var city in citymap) {
 	      plotCircles(citymap, city).then(function(cityCircle){
 	        google.maps.event.addListener(cityCircle, 'click', function(ev) {
-	          alert(cityCircle.heatmap);
-	          // window.location.href = "http://127.0.0.1:9000/heatmaps/AB.html";
+	          window.location.href = cityCircle.heatmap;
 	        });
 	      })
 	      // Add the circle for this city to the map.
