@@ -133,6 +133,7 @@ var writeData = function(temp, csv, json){
     dictCities[temp] = {data: lines, cost: provinceSpent.toFixed(2), proj: totalApps, numCities: provCities};
     Q.all(wcPromises).then(function(greppedPromises){
       receiveCoord(temp, greppedPromises).then(function(){
+        debugger;
         fs.writeFile(json, JSON.stringify(dictCities[temp]), "utf8");
         deferredWD.resolve();
         return deferredWD.promise;
@@ -146,10 +147,13 @@ var receiveCoord = function(prov, coordPromises){
   for (var i in coordPromises){
     var deferredP = Q.defer();
     var parsed = JSON.parse(coordPromises[i]).geonames[0];
+    if(i >= 15){
+      debugger;
+    }
     if(parsed != undefined){
-      dictCities[prov].data[parsed.toponymName].lat = parseFloat(parsed.lat);
-      dictCities[prov].data[parsed.toponymName].lng = parseFloat(parsed.lng);
-      dictCities[prov].data[parsed.toponymName].pop = parsed.population;
+      dictCities[prov].data[parsed.name].lat = parseFloat(parsed.lat);
+      dictCities[prov].data[parsed.name].lng = parseFloat(parsed.lng);
+      dictCities[prov].data[parsed.name].pop = parsed.population;
     }
     deferredP.resolve();
     deferred.push(deferredP);
