@@ -147,9 +147,16 @@ var receiveCoord = function(prov, coordPromises){
     var deferredP = Q.defer();
     var parsed = JSON.parse(coordPromises[i]).geonames[0];
     if(parsed != undefined){
-      dictCities[prov].data[parsed.toponymName].lat = parseFloat(parsed.lat);
-      dictCities[prov].data[parsed.toponymName].lng = parseFloat(parsed.lng);
-      dictCities[prov].data[parsed.toponymName].pop = parsed.population;
+      if(dictCities[prov].data[parsed.name] != undefined){
+        dictCities[prov].data[parsed.name].lat = parseFloat(parsed.lat);
+        dictCities[prov].data[parsed.name].lng = parseFloat(parsed.lng);
+        dictCities[prov].data[parsed.name].pop = parsed.population;
+      }
+      else{
+        dictCities[prov].data[parsed.toponymName].lat = parseFloat(parsed.lat);
+        dictCities[prov].data[parsed.toponymName].lng = parseFloat(parsed.lng);
+        dictCities[prov].data[parsed.toponymName].pop = parsed.population;
+      }
     }
     deferredP.resolve();
     deferred.push(deferredP);
@@ -204,7 +211,7 @@ var grepCoord = function(city, prov){
     break;
   }
 
-  var query = "http://api.geonames.org/searchJSON?name_startsWith=" + city + "&adminCode1=" + adminCode1 + "&featureClass=P&orderby=population&maxRows=1&country=CA&username=bi436";
+  var query = "http://api.geonames.org/searchJSON?name_equals=" + city + "&adminCode1=" + adminCode1 + "&featureClass=P&orderby=population&maxRows=1&country=CA&username=bi436";
   request(query, function(error, response, body){
     if(!error && response.statusCode == 200){
       deferred.resolve(body);
