@@ -147,7 +147,7 @@ var receiveCoord = function(prov, coordPromises){
   for (var i in coordPromises){
     var deferredP = Q.defer();
     var parsed = JSON.parse(coordPromises[i]).geonames[0];
-    if(i >= 16){
+    if(i >= 190){
       debugger;
     }
     if(parsed != undefined){
