@@ -3,21 +3,25 @@
   <head>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
-    <title>KPI 1</title>
+    <title>Total Spending By Location</title>
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <script src="js/DATA.js"></script>
   </head>
   <body>
-  <h1>KPI 1</h1>
-  <p>A brief description of this KPI.
-    <div id="menu">
-      <a href="http://127.0.0.1:9000/index.html">KPI 1</a>
-      <a href="http://127.0.0.1:9000/kpi2.html">KPI 2</a>
-      <a href="http://127.0.0.1:9000/kpi3.html">KPI 3</a>
-      <a href="http://127.0.0.1:9000/kpi4.html">KPI 4</a>
-    </div>
+  <div id="logo">
+  	Department of Management Sciences 2016
+  	<img src="img/seal.gif" alt="">
+  </div>
+  <div id="menu" class="dropdown">
+  	<button class="dropbtn">1) Total Spending by Location</button>
+  	<div class="dropdown-content" style="left:0;">
+      	    <a href="http://127.0.0.1:9000/kpi2.html">2) Spending per Capita</a>
+            <a href="http://127.0.0.1:9000/kpi3.html">3) Spending by Project Type</a>
+            <a href="http://127.0.0.1:9000/kpi4.html">4) Percentage of Spending Relative to Tax Contribution</a>
+  	</div>
+  	<p>A brief description of total spending by location. Maybe even a summary of some kind with a $ amount.
+  </div>
     <div id="map"></div>
-    <img src="img/seal.gif" alt="">Department of Management Sciences 2016.<img>
     <script>
       var citymap = {
         AB: {
