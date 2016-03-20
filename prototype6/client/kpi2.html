@@ -32,55 +32,68 @@
       var citymap = {
         AB: {
           center: {lat: 55.0000, lng: -115.0000},
-          cost: DATA["AB"]["cost"]
+          cost: DATA["AB"]["cost"],
+          population: 4146000
         },
         BC: {
           center: {lat: 54.0000, lng: -125.0000},
-          cost: DATA["BC"]["cost"]
+          cost: DATA["BC"]["cost"],
+          population: 4631000
         },
         MB: {
           center: {lat: 55.0000, lng: -97.0000},
-          cost: DATA["MB"]["cost"]
+          cost: DATA["MB"]["cost"],
+          population: 1282000
         },
         NB: {
           center: {lat: 46.0000, lng: -66.0000},
-          cost: DATA["NB"]["cost"]
+          cost: DATA["NB"]["cost"],
+          population: 753914
         },
         NL: {
           center: {lat: 53.0000, lng: -60.0000},
-          cost: DATA["NL"]["cost"]
+          cost: DATA["NL"]["cost"],
+          population: 526977
         },
         NS: {
           center: {lat: 45.0000, lng: -63.0000},
-          cost: DATA["NS"]["cost"]
+          cost: DATA["NS"]["cost"],
+          population: 942926
         },
         NT: {
           center: {lat: 66.0000, lng: -119.0000},
-          cost: DATA["NT"]["cost"]
+          cost: DATA["NT"]["cost"],
+          population: 41462
         },
         NU: {
           center: {lat: 65.0000, lng: -95.0000},
-          cost: DATA["NU"]["cost"]
+          cost: DATA["NU"]["cost"],
+          population: 31906
         },
         ON: {
           center: {lat: 50.0000, lng: -85.0000},
-          cost: DATA["ON"]["cost"]
+          cost: DATA["ON"]["cost"],
+          population: 13600000
         },
         PE: {
           center: {lat: 46.2500, lng: -63.0000},
-          cost: DATA["PE"]["cost"]
+          cost: DATA["PE"]["cost"],
+          population: 146283
         },
         QC: {
           center: {lat: 53.0000, lng: -70.0000},
-          cost: DATA["QC"]["cost"]
+          cost: DATA["QC"]["cost"],
+          population: 8215000
         },
         SK: {
           center: {lat: 55.0000, lng: -106.0000},
-          cost: DATA["SK"]["cost"]
+          cost: DATA["SK"]["cost"],
+          population: 1130000
         },
         YT: {
           center: {lat: 64.0000, lng: -135.0000},
-          cost: DATA["YT"]["cost"]
+          cost: DATA["YT"]["cost"],
+          population: 33897
         }
       };
   function initMap() {
@@ -96,18 +109,18 @@
 	      fillOpacity: 0.35,
 	      map: map,
 	      center: citymap[city].center,
-	      radius: Math.sqrt(citymap[city].cost) * 2
+	      radius: Math.sqrt(citymap[city].cost/citymap[city].population) * 1800
 	    });
 	    resolve(cityCircle);
 	  })
 	};
-	
+
 	var map = new google.maps.Map(document.getElementById('map'), {
 	  zoom: 4,
 	  center: {lat: 61.000, lng: -95.000}, // CENTER ON CANADA
 	  mapTypeId: google.maps.MapTypeId.TERRAIN
 	});
-	
+
 	// Construct the circle for each value in citymap.
 	// Note: We scale the area of the circle based on the cost.
 	for (var city in citymap) {
