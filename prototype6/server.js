@@ -74,7 +74,7 @@ var startUp = function(){
     dictCities["totalCitiesReq"] = 0;
     Object.keys(dictCities).forEach(function(key) {
       if(key != "totalCost" && key != "totalProj" && key !="totalCitiesReq"){
-        dictCities["totalCost"] += parseFloat(dictCities[key].cost);
+        dictCities["totalCost"] += parseFloat(dictCities[key].cost).toFixed(2);
         dictCities["totalProj"] += parseFloat(dictCities[key].proj);
         dictCities["totalCitiesReq"] += parseFloat(dictCities[key].numCities);
       }
@@ -99,8 +99,11 @@ var writeData = function(temp, csv, json){
     var allTextLines = data1.split(/\r\n|\n/);
     var headers = allTextLines[0].split(',');
     var lines = {};
-    var provinceSpent = 0; var totalApps = 0; var provCities = 0;
+    var provinceSpent = 0; var totalApps = 0; var provCities = 0; var green = 0; var transit = 0; var social = 0; var other = 0; var misc = 0;
     var wcPromises = [];
+    var greenKeywords = ["lagoon", "pump", "beach", "creek", "wastewater", "park", "forest", "grasslands", "water", "sewage", "plant", "clean", "energy", "culvert", "brook", "trail", "sanitation", "pumping", "well", "sewer", "reservoir", "recycling"];
+    var transitKeywords = ["terminal", "airport", "highway", "road", "avenue", "street", "route", "port", "transit", "subway", "boulevard", "station", "rail", "Paving", "bridge", "bike", "path", "lane"];
+    var socialKeywords = ["housing", "senior", "care", "library", "ymca", "centre", "hall", "museum", "conservatory", "heritage", "community", "pool", "theatre", "family", "recreation"];
 
     for (var i = 1; i < allTextLines.length; i++) {
       var data = allTextLines[i].split(',');
@@ -110,19 +113,55 @@ var writeData = function(temp, csv, json){
           tarr.push(data[j]);
         }
         provinceSpent += parseFloat(tarr[2]);
+        var flagG = false;
+        var flagT = false;
+        var flagS = false;
+        var assoc = [];
+        var tempLine = tarr[1].trim().toLowerCase().split(" ");
+        // Associate (keywords with association)
+        for (var j = 0; j < tempLine.length; j++){
+          if(flagG && flagT && flagS){break;}
+          if(!flagG){
+            if(greenKeywords.indexOf(tempLine[j]) > -1){
+              assoc.push("Green");
+              flagG = true;
+              green += parseFloat(tarr[2]);
+            }
+          }
+          if(!flagT){
+            if(transitKeywords.indexOf(tempLine[j]) > -1){
+              assoc.push("Transit");
+              flagT = true;
+              transit += parseFloat(tarr[2]);
+            }
+          }
+          if(!flagS){
+            if(socialKeywords.indexOf(tempLine[j]) > -1){
+              assoc.push("Social");
+              flagS = true;
+              social += parseFloat(tarr[2]);
+            }
+          }
+        }
+        if(assoc.length == 0){
+          misc+= parseFloat(tarr[2]);
+        }
+
         if(lines[tarr[0]] == undefined){
           wcPromises.push(grepCoord(tarr[0], temp));
           lines[tarr[0]] = {
-            projects: [{title: tarr[1], cost: parseFloat(tarr[2])}],
+            projects: [{title: tarr[1], cost: parseFloat(tarr[2]), association: assoc}],
+            // projects: [{title: tarr[1], cost: parseFloat(tarr[2])}],
             sum: parseFloat(tarr[2]),
-            numApps: 1
+            numApps: 1,
           };
           totalApps++;
           provCities++;
         }
         else{
           // do something for existing ones.
-          lines[tarr[0]].projects.push({title: tarr[1], cost: parseFloat(tarr[2])});
+          // lines[tarr[0]].projects.push({title: tarr[1], cost: parseFloat(tarr[2])});
+          lines[tarr[0]].projects.push({title: tarr[1], cost: parseFloat(tarr[2]), association: assoc});
           lines[tarr[0]].sum += parseFloat(tarr[2]);
           lines[tarr[0]].numApps++;
           totalApps++;
@@ -130,7 +169,7 @@ var writeData = function(temp, csv, json){
       }
     }
 
-    dictCities[temp] = {data: lines, cost: provinceSpent.toFixed(2), proj: totalApps, numCities: provCities};
+    dictCities[temp] = {data: lines, cost: provinceSpent.toFixed(2), proj: totalApps, numCities: provCities, greenTot: green.toFixed(2), transitTot: transit.toFixed(2), socialTot: social.toFixed(2), miscTot: misc};
     Q.all(wcPromises).then(function(greppedPromises){
       receiveCoord(temp, greppedPromises).then(function(){
         fs.writeFile(json, JSON.stringify(dictCities[temp]), "utf8");
@@ -217,8 +256,8 @@ var grepCoord = function(city, prov){
       deferred.resolve(body);
     }
     else{
-      debugger;
-      console.log("Broken" + body);
+      console.log(query);
+      console.log("Broken" + error);
       deferred.resolve(body);
     }
   })
@@ -270,6 +309,8 @@ router.route('/all')
 //     text: data.contactMsg
 //   })
 //   res.json(data);
+//public trans, green infra, and then social infra, other
+
 // });
 
 

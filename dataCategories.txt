@@ -1,58 +1,8 @@
 Green:
-Lagoon 
-Beach
-Park
-Forest 
-Grasslands
-water
-sewage
-plant
-clean
-energy
-culvert
-brook
-trail
-sanitation
-pumping
-well
-sewer
-reservoir
-recycling
+["lagoon", "beach", "wastewater", "park", "forest", "grasslands", "water", "sewage", "plant", "clean", "energy", "culvert", "brook", "trail", "sanitation", "pumping", "well", "sewer", "reservoir", "recycling"]
 
 Transit:
-terminal
-highway
-road
-avenue
-street
-route
-port
-transit
-subway
-Boulevard
-station
-rail
-Paving
-bridge
-bike
-path
-lane
+["terminal", "highway", "road", "avenue", "street", "route", "port", "transit", "subway", "boulevard", "station", "rail", "Paving", "bridge", "bike", "path", "lane"]
 
-Social: 
-housing
-senior
-care
-library
-ymca
-centre
-hall
-museum
-conservatory
-heritage
-community
-pool
-theatre
-family
-recreation
-
-
+Social:
+["housing", "senior", "care", "library", "ymca", "centre", "hall", "museum", "conservatory", "heritage", "community", "pool", "theatre", "family", "recreation"]
