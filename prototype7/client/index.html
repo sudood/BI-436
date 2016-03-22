@@ -10,8 +10,8 @@
   google.charts.setOnLoadCallback(drawRegionsMap);
   function drawRegionsMap() {
     var data = google.visualization.arrayToDataTable([
-      ['Country', 'Total Spending'],
-      ['Canada', CA_total_spending_by_location],
+      ['Country', 'Total Spending', 'Total Number of Projects'],
+      ['Canada', CA_total_spending_by_location, CA_proj],
     ]);
     var options = {
       region: 'CA',

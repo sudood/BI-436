@@ -5,6 +5,7 @@ xmlHttp.send( null );
 var DATA = JSON.parse(xmlHttp.responseText);
 
 var CA_total_spending_by_location = Math.round(Number(DATA.totalCost));
+var CA_proj = Math.round(Number(DATA.totalProj));
 var CA_spending_per_capita = Math.round(Number(DATA.totalCost/35160000));
 var CA_green = Math.round(Number(DATA.totalGreen));
 var CA_transit = Math.round(Number(DATA.totalTransit));
