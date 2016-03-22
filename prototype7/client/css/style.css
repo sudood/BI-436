@@ -7,25 +7,14 @@ html, body {
 h1{
 	color: black;
 	text-align: center;
+	z-index: 5
 }
 #map {
-  height: 90%;
+  height: 100%;
   width: 100%;
 }
 #heatmap {
   height: 100%;
-}
-#floating-panel {
-  position: absolute;
-  top: 10px;
-  left: 25%;
-  z-index: 5;
-  background-color: #fff;
-  padding: 5px;
-  border: 1px solid #999;
-  text-align: center;
-  line-height: 30px;
-  padding-left: 10px;
 }
 #floating-panel {
   background-color: #fff;
@@ -45,17 +34,13 @@ a{
 }
 #menu{
   position: absolute;
-  left: 17%;
+  margin-top: 45%;
+  left: 18%;
   z-index: 5;
   background-color: #fff;
   text-align: center;
-}
-#menu{
-  background-color: #fff;
-  left: 17%;
+  border: 1px solid #999;
   padding: 5px;
-  position: absolute;
-  z-index: 5;
 }
 button{
 	font-size: 20px;
