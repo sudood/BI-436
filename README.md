@@ -5,5 +5,5 @@ To get running, you can use the following commands.
 
 ```sh
 $ npm install
-$ node index.js or nodemon index.js
+$ node server.js or nodemon server.js
 ```
