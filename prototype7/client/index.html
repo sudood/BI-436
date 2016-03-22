@@ -4,6 +4,7 @@
   <script type="text/javascript" src="https://www.google.com/jsapi"></script>
   <title>Key Points of Interest</title>
   <link rel="stylesheet" type="text/css" href="css/style.css">
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
   <script src="js/DATA.js"></script>
   <script src="js/menu.js"></script>
   <script type="text/javascript">
@@ -11,7 +12,7 @@
   google.charts.setOnLoadCallback(drawRegionsMap);
   function drawRegionsMap() {
     var data = google.visualization.arrayToDataTable([
-      ['Country', 'Total Spending', 'Total Number of Projects'],
+      ['Country', 'Total Spending ($)', 'Total Number of Projects'],
       ['Canada', CA_total_spending_by_location, CA_proj],
     ]);
     var options = {
@@ -34,11 +35,11 @@
 <body>
   <h1>Key Points of Interest for Canadian Infrastructure Project Spending</h1>
   <div id="menu">
-    <button onclick="home()">Total Spending</button>
-    <button onclick="totCapita()">Spending per Capita</button>
-    <button onclick="totGreen()">Green Spending</button>
-    <button onclick="totTransit()">Transit Spending</button>
-    <button onclick="totSocial()">Social Spending</button>
+    <button class="btn-default btn-xs btn-success" disabled="disabled" onclick="home()">Total Spending</button>
+    <button class="btn-default btn-xs" onclick="totCapita()">Spending per Capita</button>
+    <button class="btn-default btn-xs" onclick="totGreen()">Green Spending</button>
+    <button class="btn-default btn-xs" onclick="totTransit()">Transit Spending</button>
+    <button class="btn-default btn-xs" onclick="totSocial()">Social Spending</button>
   </div>
   <div id="map">
   </div>

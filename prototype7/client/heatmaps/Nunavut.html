@@ -1,87 +1,88 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>Heatmaps</title>
-    <link rel="stylesheet" type="text/css" href="../css/style.css">
-    <script src="../js/DATA.js"></script>
-  </head>
-  <body>
-    <div id="floating-panel">
-      <button onclick="toggleHeatmap()">Toggle Heatmap</button>
-      <button onclick="changeGradient()">Change gradient</button>
-      <button onclick="changeRadius()">Change radius</button>
-      <button onclick="changeOpacity()">Change opacity</button>
-    </div>
-    <div id="heatmap"></div>
-    <script>
+<head>
+  <meta charset="utf-8">
+  <title>Heatmaps</title>
+  <link rel="stylesheet" type="text/css" href="../css/style.css">
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  <script src="../js/DATA.js"></script>
+</head>
+<body>
+  <div id="floating-panel">
+    <button class="btn-default" onclick="toggleHeatmap()">Toggle Heatmap</button>
+    <button class="btn-default" onclick="changeGradient()">Change gradient</button>
+    <button class="btn-default" onclick="changeRadius()">Change radius</button>
+    <button class="btn-default" onclick="changeOpacity()">Change opacity</button>
+  </div>
+  <div id="heatmap"></div>
+  <script>
 
-      // This example requires the Visualization library. Include the libraries=visualization
-      // parameter when you first load the API. For example:
-      // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=visualization">
+  // This example requires the Visualization library. Include the libraries=visualization
+  // parameter when you first load the API. For example:
+  // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=visualization">
 
-      var map, heatmap;
+  var map, heatmap;
 
-      function initMap() {
-        map = new google.maps.Map(document.getElementById('heatmap'), {
-          zoom: 3,
-          center: {lat: 73.0000, lng: -91.0000},
-          mapTypeId: google.maps.MapTypeId.SATELLITE
-        });
+  function initMap() {
+    map = new google.maps.Map(document.getElementById('heatmap'), {
+      zoom: 3,
+      center: {lat: 73.0000, lng: -91.0000},
+      mapTypeId: google.maps.MapTypeId.SATELLITE
+    });
 
-        heatmap = new google.maps.visualization.HeatmapLayer({
-          data: getPoints(),
-          map: map
-        });
+    heatmap = new google.maps.visualization.HeatmapLayer({
+      data: getPoints(),
+      map: map
+    });
+  }
+
+  function toggleHeatmap() {
+    heatmap.setMap(heatmap.getMap() ? null : map);
+  }
+
+  function changeGradient() {
+    var gradient = [
+      'rgba(0, 255, 255, 0)',
+      'rgba(0, 255, 255, 1)',
+      'rgba(0, 191, 255, 1)',
+      'rgba(0, 127, 255, 1)',
+      'rgba(0, 63, 255, 1)',
+      'rgba(0, 0, 255, 1)',
+      'rgba(0, 0, 223, 1)',
+      'rgba(0, 0, 191, 1)',
+      'rgba(0, 0, 159, 1)',
+      'rgba(0, 0, 127, 1)',
+      'rgba(63, 0, 91, 1)',
+      'rgba(127, 0, 63, 1)',
+      'rgba(191, 0, 31, 1)',
+      'rgba(255, 0, 0, 1)'
+    ]
+    heatmap.set('gradient', heatmap.get('gradient') ? null : gradient);
+  }
+
+  function changeRadius() {
+    heatmap.set('radius', heatmap.get('radius') ? null : 20);
+  }
+
+  function changeOpacity() {
+    heatmap.set('opacity', heatmap.get('opacity') ? null : 0.2);
+  }
+
+  function getPoints() {
+    var lat_long_list = [];
+    for (var city in DATA['NU']['data']){
+      var lat = DATA["NU"]["data"][city]["lat"];
+      var lng = DATA["NU"]["data"][city]["lng"];
+      if (lat && lng){
+        var map_item = new google.maps.LatLng(lat, lng);
+        lat_long_list.push(map_item);
       }
-
-      function toggleHeatmap() {
-        heatmap.setMap(heatmap.getMap() ? null : map);
-      }
-
-      function changeGradient() {
-        var gradient = [
-          'rgba(0, 255, 255, 0)',
-          'rgba(0, 255, 255, 1)',
-          'rgba(0, 191, 255, 1)',
-          'rgba(0, 127, 255, 1)',
-          'rgba(0, 63, 255, 1)',
-          'rgba(0, 0, 255, 1)',
-          'rgba(0, 0, 223, 1)',
-          'rgba(0, 0, 191, 1)',
-          'rgba(0, 0, 159, 1)',
-          'rgba(0, 0, 127, 1)',
-          'rgba(63, 0, 91, 1)',
-          'rgba(127, 0, 63, 1)',
-          'rgba(191, 0, 31, 1)',
-          'rgba(255, 0, 0, 1)'
-        ]
-        heatmap.set('gradient', heatmap.get('gradient') ? null : gradient);
-      }
-
-      function changeRadius() {
-        heatmap.set('radius', heatmap.get('radius') ? null : 20);
-      }
-
-      function changeOpacity() {
-        heatmap.set('opacity', heatmap.get('opacity') ? null : 0.2);
-      }
-
-      function getPoints() {
-	var lat_long_list = [];
-	for (var city in DATA['NU']['data']){
-		var lat = DATA["NU"]["data"][city]["lat"];
-		var lng = DATA["NU"]["data"][city]["lng"];
-		if (lat && lng){
-			var map_item = new google.maps.LatLng(lat, lng);
-			lat_long_list.push(map_item);
-		}
-	}
-	return lat_long_list;
-      }
-    </script>
-    <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAR766XsrJMcGxNP9ihgX3sRyMMDeZOouk&libraries=visualization&callback=initMap">
-    </script>
-  </body>
+    }
+    return lat_long_list;
+  }
+  </script>
+  <script async defer
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAR766XsrJMcGxNP9ihgX3sRyMMDeZOouk&libraries=visualization&callback=initMap">
+  </script>
+</body>
 </html>
