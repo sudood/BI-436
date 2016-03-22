@@ -45,23 +45,22 @@ a{
 }
 #menu{
   position: absolute;
-  left: 25%;
+  left: 17%;
   z-index: 5;
   background-color: #fff;
-  padding: 5px;
-  border: 1px solid #999;
   text-align: center;
-  line-height: 30px;
-  padding-left: 10px;
 }
 #menu{
   background-color: #fff;
-  border: 1px solid #999;
-  left: 25%;
+  left: 17%;
   padding: 5px;
   position: absolute;
   z-index: 5;
 }
 button{
 	font-size: 20px;
+}
+button:hover{
+	font-size: 20px;
+	color: red;
 }
