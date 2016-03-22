@@ -10,44 +10,48 @@
       google.charts.setOnLoadCallback(drawRegionsMap);
       function drawRegionsMap() {
         var data = google.visualization.arrayToDataTable([
-          ['Province', '1) Total Spending By Location', '2) Spending Per Capita'],
-          ['Newfoundland and Labrador', NL_total_spending_by_location, NL_spending_per_capita], 
-          ['Prince Edward Island', PE_total_spending_by_location, PE_spending_per_capita],
-          ['Nova Scotia', NS_total_spending_by_location, NS_spending_per_capita],
-          ['New Brunswick', NB_total_spending_by_location, NB_spending_per_capita],
-          ['Quebec', QC_total_spending_by_location, QC_spending_per_capita],
-          ['Ontario', ON_total_spending_by_location, ON_spending_per_capita], 
-          ['Manitoba', MB_total_spending_by_location, MB_spending_per_capita],
-          ['Alberta', AB_total_spending_by_location, AB_spending_per_capita],
-          ['Saskatchewan', SK_total_spending_by_location, SK_spending_per_capita],
-          ['British Columbia', SK_total_spending_by_location, SK_spending_per_capita],
-          ['Yukon', YT_total_spending_by_location, YT_spending_per_capita],
-          ['Northwest Territories', NT_total_spending_by_location, NT_spending_per_capita],
-	  ['Nunavut', NU_total_spending_by_location, NU_spending_per_capita],
+          ['Summary'],
+          ['1000'],
 	  ]);
-        var options = {};
 	var options = {
-        	region: 'CA',
-        	resolution: 'provinces',
-        	displayMode: 'regions',
+        	region: 'CA'
       	};
         var chart = new google.visualization.GeoChart(document.getElementById('map'));
         chart.draw(data, options);
- 	google.visualization.events.addListener(chart, 'select', function() {
-        var selection = chart.getSelection();
-        // if same city is clicked twice in a row
-        // it is "unselected", and selection = []
-        if(typeof selection[0] !== "undefined") {
-          var city = data.getValue(selection[0].row, 0);
-          //alert('City is: ' + city);
-	  window.location.href = 'http://127.0.0.1:9000/heatmaps/' + city + '.html';
-        }
-    	});
       }
     </script>
   </head>
   <body>
     <h1>Key Points of Interest for Canadian Infrastructure Project Spending</h1>
-    <div id="map"></div>
+    <div id="menu">
+    	<button onclick="home()">Home</button>
+    	<button onclick="kpi1()">Total Spending</button>
+    	<button onclick="kpi2()">Spending per Capita</button>
+    	<button onclick="kpi3()">Green Spending</button>
+    	<button onclick="kpi4()">Transit Spending</button>
+    	<button onclick="kpi5()">Social Spending</button>
+    </div>
+    <div id="map">
+    </div>
   </body>
+  <script>
+	  function home(){
+	  	window.location.href = 'http://127.0.0.1:9000';
+	  }
+	  function kpi1(){
+	  	window.location.href = 'http://127.0.0.1:9000/kpi1.html';
+	  }
+	  function kpi2(){
+	  	window.location.href = 'http://127.0.0.1:9000/kpi2.html';
+	  }
+	  function kpi3(){
+	  	window.location.href = 'http://127.0.0.1:9000/kpi3.html';
+	  }
+	  function kpi4(){
+	  	window.location.href = 'http://127.0.0.1:9000/kpi4.html';
+	  }
+	  function kpi5(){
+	  	window.location.href = 'http://127.0.0.1:9000/kpi5.html';
+	  }
+  </script>
 </html>

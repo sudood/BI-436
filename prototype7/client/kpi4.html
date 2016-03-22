@@ -1,0 +1,52 @@
+<html>
+  <head>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <title>Key Points of Interest</title>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <script src="js/DATA.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['geochart']});
+      google.charts.setOnLoadCallback(drawRegionsMap);
+      function drawRegionsMap() {
+        var data = google.visualization.arrayToDataTable([
+          ['Province', 'Transit Spending'],
+          ['Newfoundland and Labrador', NL_transit],
+          ['Prince Edward Island', PE_transit], 
+          ['Nova Scotia', NS_transit], 
+          ['New Brunswick', NB_transit], 
+          ['Quebec', QC_transit], 
+          ['Ontario', ON_transit],
+          ['Manitoba', MB_transit],
+          ['Alberta', AB_transit],
+          ['Saskatchewan', SK_transit],
+          ['British Columbia', BC_transit],
+          ['Yukon', YT_transit],
+          ['Northwest Territories', NT_transit],
+	  ['Nunavut', NU_transit], 
+	  ]);
+	var options = {
+        	region: 'CA',
+        	resolution: 'provinces',
+        	displayMode: 'regions',
+      	};
+        var chart = new google.visualization.GeoChart(document.getElementById('map'));
+        chart.draw(data, options);
+ 	google.visualization.events.addListener(chart, 'select', function() {
+        var selection = chart.getSelection();
+        // if same city is clicked twice in a row
+        // it is "unselected", and selection = []
+        if(typeof selection[0] !== "undefined") {
+          var city = data.getValue(selection[0].row, 0);
+          //alert('City is: ' + city);
+	  window.location.href = 'http://127.0.0.1:9000/heatmaps/' + city + '.html';
+        }
+    	});
+      }
+    </script>
+  </head>
+  <body>
+    <h1>Key Points of Interest for Canadian Infrastructure Project Spending</h1>
+    <div id="map"></div>
+  </body>
+</html>
