@@ -1,0 +1,57 @@
+<html>
+  <head>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <title>Key Points of Interest</title>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <script src="js/DATA.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['geochart']});
+      google.charts.setOnLoadCallback(drawRegionsMap);
+      function drawRegionsMap() {
+        var data = google.visualization.arrayToDataTable([
+          ['Summary'],
+          ['1000'],
+	  ]);
+	var options = {
+        	region: 'CA'
+      	};
+        var chart = new google.visualization.GeoChart(document.getElementById('map'));
+        chart.draw(data, options);
+      }
+    </script>
+  </head>
+  <body>
+    <h1>Key Points of Interest for Canadian Infrastructure Project Spending</h1>
+    <div id="menu">
+    	<button onclick="home()">Home</button>
+    	<button onclick="kpi1()">Total Spending</button>
+    	<button onclick="kpi2()">Spending per Capita</button>
+    	<button onclick="kpi3()">Green Spending</button>
+    	<button onclick="kpi4()">Transit Spending</button>
+    	<button onclick="kpi5()">Social Spending</button>
+    </div>
+    <div id="map">
+    </div>
+  </body>
+  <script>
+	  function home(){
+	  	window.location.href = 'http://127.0.0.1:9000';
+	  }
+	  function kpi1(){
+	  	window.location.href = 'http://127.0.0.1:9000/kpi1.html';
+	  }
+	  function kpi2(){
+	  	window.location.href = 'http://127.0.0.1:9000/kpi2.html';
+	  }
+	  function kpi3(){
+	  	window.location.href = 'http://127.0.0.1:9000/kpi3.html';
+	  }
+	  function kpi4(){
+	  	window.location.href = 'http://127.0.0.1:9000/kpi4.html';
+	  }
+	  function kpi5(){
+	  	window.location.href = 'http://127.0.0.1:9000/kpi5.html';
+	  }
+  </script>
+</html>
