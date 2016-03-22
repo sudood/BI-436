@@ -87,10 +87,13 @@ var startUp = function(){
         dictCities["totalMisc"] += parseFloat(dictCities[key].miscTot);
       }
     });
-    dictCities["totalGreen"] = dictCities["totalGreen"].toFixed(2);
-    dictCities["totalTransit"] = dictCities["totalTransit"].toFixed(2);
-    dictCities["totalSocial"] = dictCities["totalSocial"].toFixed(2);
-    dictCities["totalMisc"] = dictCities["totalMisc"].toFixed(2);
+    dictCities["totalCost"] = Math.round(dictCities["totalCost"]);
+    dictCities["totalProj"] = Math.round(dictCities["totalProj"]);
+    dictCities["totalCitiesReq"] = Math.round(dictCities["totalCitiesReq"]);
+    dictCities["totalGreen"] = Math.round(dictCities["totalGreen"]);
+    dictCities["totalTransit"] = Math.round(dictCities["totalTransit"]);
+    dictCities["totalSocial"] = Math.round(dictCities["totalSocial"]);
+    dictCities["totalMisc"] = Math.round(dictCities["totalMisc"]);
   });
 }
 
@@ -289,10 +292,10 @@ var loadUtil = function(dict, prov){
     }
   }
   debugger;
-  dict[prov].greenTot = green.toFixed(2);
-  dict[prov].transitTot = transit.toFixed(2);
-  dict[prov].socialTot = social.toFixed(2);
-  dict[prov].miscTot = misc.toFixed(2);
+  dict[prov].greenTot = Math.round(green);
+  dict[prov].transitTot = Math.round(transit);
+  dict[prov].socialTot = Math.round(social);
+  dict[prov].miscTot = Math.round(misc);
   deferred.resolve(dict[prov]);
   return deferred.promise;
 }
