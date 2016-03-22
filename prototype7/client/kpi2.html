@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Spending Per Capita</title>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+  </head>
+  <body>
+  <div id="logo">
+  	Department of Management Sciences 2016
+  	<img src="img/seal.gif" alt="">
+  </div>
+  <div id="menu" class="dropdown">
+  	<button class="dropbtn">2) Spending per Capita</button>
+  	<div class="dropdown-content" style="left:0;">
+      	    <a href="http://127.0.0.1:9000/index.html">1) Total Spending by Location</a>
+            <a href="http://127.0.0.1:9000/kpi3.html">3) Percentage of Spending Relative to Tax Contribution</a>
+  	</div>
+  	<p>A brief description of Canadian Government Infrastructure Spending per Capita for the years 2008 - Present.
+  </div>
+    <div id="map"></div>
+    <img src="img/seal.gif" alt="">Department of Management Sciences 2016.<img>
+    <script>
+	var xmlHttp = new XMLHttpRequest();
+	var URL = "http://127.0.0.1:9000/api/all";
+    	xmlHttp.open( "GET", URL, false );
+    	xmlHttp.send( null );
+	var DATA = JSON.parse(xmlHttp.responseText)
+
+      var citymap = {
+        AB: {
+          center: {lat: 55.0000, lng: -115.0000},
+          cost: DATA["AB"]["cost"],
+          population: 4146000
+        },
+        BC: {
+          center: {lat: 54.0000, lng: -125.0000},
+          cost: DATA["BC"]["cost"],
+          population: 4631000
+        },
+        MB: {
+          center: {lat: 55.0000, lng: -97.0000},
+          cost: DATA["MB"]["cost"],
+          population: 1282000
+        },
+        NB: {
+          center: {lat: 46.0000, lng: -66.0000},
+          cost: DATA["NB"]["cost"],
+          population: 753914
+        },
+        NL: {
+          center: {lat: 53.0000, lng: -60.0000},
+          cost: DATA["NL"]["cost"],
+          population: 526977
+        },
+        NS: {
+          center: {lat: 45.0000, lng: -63.0000},
+          cost: DATA["NS"]["cost"],
+          population: 942926
+        },
+        NT: {
+          center: {lat: 66.0000, lng: -119.0000},
+          cost: DATA["NT"]["cost"],
+          population: 41462
+        },
+        NU: {
+          center: {lat: 65.0000, lng: -95.0000},
+          cost: DATA["NU"]["cost"],
+          population: 31906
+        },
+        ON: {
+          center: {lat: 50.0000, lng: -85.0000},
+          cost: DATA["ON"]["cost"],
+          population: 13600000
+        },
+        PE: {
+          center: {lat: 46.2500, lng: -63.0000},
+          cost: DATA["PE"]["cost"],
+          population: 146283
+        },
+        QC: {
+          center: {lat: 53.0000, lng: -70.0000},
+          cost: DATA["QC"]["cost"],
+          population: 8215000
+        },
+        SK: {
+          center: {lat: 55.0000, lng: -106.0000},
+          cost: DATA["SK"]["cost"],
+          population: 1130000
+        },
+        YT: {
+          center: {lat: 64.0000, lng: -135.0000},
+          cost: DATA["YT"]["cost"],
+          population: 33897
+        }
+      };
+  function initMap() {
+    // Create the map.
+	var plotCircles = function(citymap, city){
+	  return new Promise(function(resolve) {
+	    var cityCircle = new google.maps.Circle({
+	      heatmap: "http://127.0.0.1:9000/heatmaps/" + city + ".html",
+	      strokeColor: '#FF0000',
+	      strokeOpacity: 0.8,
+	      strokeWeight: 2,
+	      fillColor: '#FF0000',
+	      fillOpacity: 0.35,
+	      map: map,
+	      center: citymap[city].center,
+	      radius: Math.sqrt(citymap[city].cost/citymap[city].population) * 1800
+	    });
+	    resolve(cityCircle);
+	  })
+	};
+
+	var map = new google.maps.Map(document.getElementById('map'), {
+	  zoom: 4,
+	  center: {lat: 61.000, lng: -95.000}, // CENTER ON CANADA
+	  mapTypeId: google.maps.MapTypeId.TERRAIN
+	});
+
+	// Construct the circle for each value in citymap.
+	// Note: We scale the area of the circle based on the cost.
+	for (var city in citymap) {
+	  plotCircles(citymap, city).then(function(cityCircle){
+	    google.maps.event.addListener(cityCircle, 'click', function(ev) {
+	      window.location.href = cityCircle.heatmap;
+	    });
+	  })
+	  // Add the circle for this city to the map.
+	}
+    }
+</script>
+<script async defer
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAR766XsrJMcGxNP9ihgX3sRyMMDeZOouk&callback=initMap">
+</script>
+</body>
+</html>
