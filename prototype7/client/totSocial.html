@@ -10,25 +10,12 @@
   google.charts.setOnLoadCallback(drawRegionsMap);
   function drawRegionsMap() {
     var data = google.visualization.arrayToDataTable([
-      ['Province', 'Total Spending By Location ($ Millions)'],
-      ['Newfoundland and Labrador', NL_total_spending_by_location],
-      ['Prince Edward Island', PE_total_spending_by_location],
-      ['Nova Scotia', NS_total_spending_by_location],
-      ['New Brunswick', NB_total_spending_by_location],
-      ['Quebec', QC_total_spending_by_location],
-      ['Ontario', ON_total_spending_by_location],
-      ['Manitoba', MB_total_spending_by_location],
-      ['Alberta', AB_total_spending_by_location],
-      ['Saskatchewan', SK_total_spending_by_location],
-      ['British Columbia', BC_total_spending_by_location],
-      ['Yukon', YT_total_spending_by_location],
-      ['Northwest Territories', NT_total_spending_by_location],
-      ['Nunavut', NU_total_spending_by_location],
+      ['Country', 'Total Social Spending'],
+      ['Canada', CA_social],
     ]);
     var options = {
       region: 'CA',
-      resolution: 'provinces',
-      displayMode: 'regions',
+      legend: 'none'
     };
     var chart = new google.visualization.GeoChart(document.getElementById('map'));
     chart.draw(data, options);
@@ -37,9 +24,7 @@
       // if same city is clicked twice in a row
       // it is "unselected", and selection = []
       if(typeof selection[0] !== "undefined") {
-        var city = data.getValue(selection[0].row, 0);
-        //alert('City is: ' + city);
-        window.location.href = 'http://127.0.0.1:9000/heatmaps/' + city + '.html';
+        window.location.href = 'http://127.0.0.1:9000/kpi5.html';
       }
     });
   }
@@ -47,6 +32,31 @@
 </head>
 <body>
   <h1>Key Points of Interest for Canadian Infrastructure Project Spending</h1>
-  <div id="map"></div>
+  <div id="menu">
+    <button onclick="home()">Total Spending</button>
+    <button onclick="totCapita()">Spending per Capita</button>
+    <button onclick="totGreen()">Green Spending</button>
+    <button onclick="totTransit()">Transit Spending</button>
+    <button onclick="totSocial()">Social Spending</button>
+  </div>
+  <div id="map">
+  </div>
 </body>
+<script>
+function home(){
+  window.location.href = 'http://127.0.0.1:9000';
+}
+function totCapita(){
+  window.location.href = 'http://127.0.0.1:9000/totCapita.html';
+}
+function totGreen(){
+  window.location.href = 'http://127.0.0.1:9000/totGreen.html';
+}
+function totTransit(){
+  window.location.href = 'http://127.0.0.1:9000/totTransit.html';
+}
+function totSocial(){
+  window.location.href = 'http://127.0.0.1:9000/totSocial.html';
+}
+</script>
 </html>

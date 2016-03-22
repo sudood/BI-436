@@ -4,6 +4,12 @@ xmlHttp.open( "GET", URL, false );
 xmlHttp.send( null );
 var DATA = JSON.parse(xmlHttp.responseText);
 
+var CA_total_spending_by_location = Math.round(Number(DATA.totalCost));
+var CA_spending_per_capita = Math.round(Number(DATA.totalCost/35160000));
+var CA_green = Math.round(Number(DATA.totalGreen));
+var CA_transit = Math.round(Number(DATA.totalTransit));
+var CA_social = Math.round(Number(DATA.totalSocial));
+
 var NL_total_spending_by_location = Math.round(Number(DATA['NL']['cost']));
 var NL_spending_per_capita = Math.round(DATA['NL']['cost']/526977);
 var NL_green = Math.round(DATA['NL']['greenTot']);
@@ -81,4 +87,3 @@ var NU_spending_per_capita = Math.round(DATA['NU']['cost']/31906);
 var NU_green = Math.round(DATA['NU']['greenTot']);
 var NU_transit = Math.round(DATA['NU']['transitTot']);
 var NU_social = Math.round(DATA['NU']['socialTot']);
-
