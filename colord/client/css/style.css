@@ -1,0 +1,66 @@
+html, body {
+  height: 100%;
+  background-color: white;
+  color: white;
+  overflow: hidden;
+}
+h1{
+	color: black;
+	text-align: center;
+	z-index: 5
+}
+#map {
+  height: 100%;
+  width: 100%;
+}
+#heatmap {
+  height: 100%;
+}
+#floating-panel {
+  background-color: #fff;
+  border: 1px solid #999;
+  left: 25%;
+  padding: 5px;
+  position: absolute;
+  top: 10px;
+  z-index: 5;
+}
+a{
+	font-size: 25px;
+	text-align:center;
+	display:block;
+	margin: 0 auto;
+	z-index: 5000;
+}
+#menu{
+  position: absolute;
+  margin-top: 45%;
+  left: 18%;
+  z-index: 5;
+  background-color: #fff;
+  text-align: center;
+  border: 1px solid #999;
+  padding: 5px;
+}
+button{
+	font-size: 20px;
+}
+button:hover{
+	font-size: 20px;
+	color: red;
+}
+#green:hover{
+	color: green;
+}
+#red:hover{
+	color: red;
+}
+#blue:hover{
+	color: blue;
+}
+#indigo:hover{
+	color: indigo;
+}
+#yellow:hover{
+	color: orange;
+}

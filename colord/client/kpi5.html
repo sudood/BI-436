@@ -1,0 +1,52 @@
+<html>
+  <head>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <title>Key Points of Interest</title>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <script src="js/DATA.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['geochart']});
+      google.charts.setOnLoadCallback(drawRegionsMap);
+      function drawRegionsMap() {
+        var data = google.visualization.arrayToDataTable([
+          ['Province', 'Social Spending'],
+          ['Newfoundland and Labrador', NL_social],
+          ['Prince Edward Island', PE_social], 
+          ['Nova Scotia', NS_social], 
+          ['New Brunswick', NB_social], 
+          ['Quebec', QC_social], 
+          ['Ontario', ON_social],
+          ['Manitoba', MB_social],
+          ['Alberta', AB_social],
+          ['Saskatchewan', SK_social],
+          ['British Columbia', BC_social],
+          ['Yukon', YT_social],
+          ['Northwest Territories', NT_social],
+	  ['Nunavut', NU_social], 
+	  ]);
+	var options = {
+        	region: 'CA',
+        	resolution: 'provinces',
+        	displayMode: 'regions',
+      	};
+        var chart = new google.visualization.GeoChart(document.getElementById('map'));
+        chart.draw(data, options);
+ 	google.visualization.events.addListener(chart, 'select', function() {
+        var selection = chart.getSelection();
+        // if same city is clicked twice in a row
+        // it is "unselected", and selection = []
+        if(typeof selection[0] !== "undefined") {
+          var city = data.getValue(selection[0].row, 0);
+          //alert('City is: ' + city);
+	  window.location.href = 'http://127.0.0.1:9000/heatmaps/' + city + '.html';
+        }
+    	});
+      }
+    </script>
+  </head>
+  <body>
+  <h1>Key Points of Interest for Canadian Infrastructure Project Spending</h1>
+    <div id="map"></div>
+  </body>
+</html>
