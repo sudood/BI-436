@@ -16,7 +16,8 @@
     ]);
     var options = {
       region: 'CA',
-      legend: 'none'
+      legend: 'none',
+      colorAxis: {colors: ['blue']}
     };
     var chart = new google.visualization.GeoChart(document.getElementById('map'));
     chart.draw(data, options);
@@ -34,11 +35,11 @@
 <body>
   <h1>Key Points of Interest for Canadian Infrastructure Project Spending</h1>
   <div id="menu">
-    <button onclick="home()">Total Spending</button>
-    <button onclick="totCapita()">Spending per Capita</button>
-    <button onclick="totGreen()">Green Spending</button>
-    <button onclick="totTransit()">Transit Spending</button>
-    <button onclick="totSocial()">Social Spending</button>
+    <button id='green' onclick="home()">Total Spending</button>
+    <button id='red' onclick="totCapita()">Spending per Capita</button>
+    <button id='blue' onclick="totGreen()">Green Spending</button>
+    <button id='indigo' onclick="totTransit()">Transit Spending</button>
+    <button id= 'yellow' onclick="totSocial()">Social Spending</button>
   </div>
   <div id="map">
   </div>

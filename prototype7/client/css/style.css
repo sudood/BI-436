@@ -49,3 +49,18 @@ button:hover{
 	font-size: 20px;
 	color: red;
 }
+#green:hover{
+	color: green;
+}
+#red:hover{
+	color: red;
+}
+#blue:hover{
+	color: blue;
+}
+#indigo:hover{
+	color: indigo;
+}
+#yellow:hover{
+	color: orange;
+}
