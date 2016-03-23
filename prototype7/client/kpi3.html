@@ -1,52 +1,52 @@
 <html>
-  <head>
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-    <title>Key Points of Interest</title>
-    <link rel="stylesheet" type="text/css" href="css/style.css">
-    <script src="js/DATA.js"></script>
-    <script type="text/javascript">
-      google.charts.load('current', {'packages':['geochart']});
-      google.charts.setOnLoadCallback(drawRegionsMap);
-      function drawRegionsMap() {
-        var data = google.visualization.arrayToDataTable([
-          ['Province', 'Green Spending'],
-          ['Newfoundland and Labrador', NL_green],
-          ['Prince Edward Island', PE_green], 
-          ['Nova Scotia', NS_green], 
-          ['New Brunswick', NB_green], 
-          ['Quebec', QC_green], 
-          ['Ontario', ON_green],
-          ['Manitoba', MB_green],
-          ['Alberta', AB_green],
-          ['Saskatchewan', SK_green],
-          ['British Columbia', BC_green],
-          ['Yukon', YT_green],
-          ['Northwest Territories', NT_green],
-	  ['Nunavut', NU_green], 
-	  ]);
-	var options = {
-        	region: 'CA',
-        	resolution: 'provinces',
-        	displayMode: 'regions',
-      	};
-        var chart = new google.visualization.GeoChart(document.getElementById('map'));
-        chart.draw(data, options);
- 	google.visualization.events.addListener(chart, 'select', function() {
-        var selection = chart.getSelection();
-        // if same city is clicked twice in a row
-        // it is "unselected", and selection = []
-        if(typeof selection[0] !== "undefined") {
-          var city = data.getValue(selection[0].row, 0);
-          //alert('City is: ' + city);
-	  window.location.href = 'http://127.0.0.1:9000/heatmaps/' + city + '.html';
-        }
-    	});
+<head>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+  <title>Key Points of Interest</title>
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+  <script src="js/DATA.js"></script>
+  <script type="text/javascript">
+  google.charts.load('current', {'packages':['geochart']});
+  google.charts.setOnLoadCallback(drawRegionsMap);
+  function drawRegionsMap() {
+    var data = google.visualization.arrayToDataTable([
+      ['Province', 'Green Spending ($M)'],
+      ['Newfoundland and Labrador', Math.round(NL_green/1000000)],
+      ['Prince Edward Island', Math.round(PE_green/1000000)],
+      ['Nova Scotia', Math.round(NS_green/1000000)],
+      ['New Brunswick', Math.round(NB_green/1000000)],
+      ['Quebec', Math.round(QC_green/1000000)],
+      ['Ontario', Math.round(ON_green/1000000)],
+      ['Manitoba', Math.round(MB_green/1000000)],
+      ['Alberta', Math.round(AB_green/1000000)],
+      ['Saskatchewan', Math.round(SK_green/1000000)],
+      ['British Columbia', Math.round(BC_green/1000000)],
+      ['Yukon', Math.round(YT_green/1000000)],
+      ['Northwest Territories', Math.round(NT_green/1000000)],
+      ['Nunavut', Math.round(NU_green/1000000)],
+    ]);
+    var options = {
+      region: 'CA',
+      resolution: 'provinces',
+      displayMode: 'regions',
+    };
+    var chart = new google.visualization.GeoChart(document.getElementById('map'));
+    chart.draw(data, options);
+    google.visualization.events.addListener(chart, 'select', function() {
+      var selection = chart.getSelection();
+      // if same city is clicked twice in a row
+      // it is "unselected", and selection = []
+      if(typeof selection[0] !== "undefined") {
+        var city = data.getValue(selection[0].row, 0);
+        //alert('City is: ' + city);
+        window.location.href = 'http://127.0.0.1:9000/heatmaps/' + city + '.html';
       }
-    </script>
-  </head>
-  <body>
+    });
+  }
+  </script>
+</head>
+<body>
   <h1>Key Points of Interest for Canadian Infrastructure Project Spending</h1>
-    <div id="map"></div>
-  </body>
+  <div id="map"></div>
+</body>
 </html>
