@@ -12,10 +12,10 @@
         var data = google.visualization.arrayToDataTable([
           ['Province', 'Spending Per Capita'],
           ['Newfoundland and Labrador', NL_spending_per_capita],
-          ['Prince Edward Island', PE_spending_per_capita], 
-          ['Nova Scotia', NS_spending_per_capita], 
-          ['New Brunswick', NB_spending_per_capita], 
-          ['Quebec', QC_spending_per_capita], 
+          ['Prince Edward Island', PE_spending_per_capita],
+          ['Nova Scotia', NS_spending_per_capita],
+          ['New Brunswick', NB_spending_per_capita],
+          ['Quebec', QC_spending_per_capita],
           ['Ontario', ON_spending_per_capita],
           ['Manitoba', MB_spending_per_capita],
           ['Alberta', AB_spending_per_capita],
@@ -23,12 +23,13 @@
           ['British Columbia', BC_spending_per_capita],
           ['Yukon', YT_spending_per_capita],
           ['Northwest Territories', NT_spending_per_capita],
-	  ['Nunavut', NU_spending_per_capita], 
+	  ['Nunavut', NU_spending_per_capita],
 	  ]);
 	var options = {
         	region: 'CA',
         	resolution: 'provinces',
         	displayMode: 'regions',
+          colorAxis: {colors: ['red']}
       	};
         var chart = new google.visualization.GeoChart(document.getElementById('map'));
         chart.draw(data, options);

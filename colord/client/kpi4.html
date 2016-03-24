@@ -12,10 +12,10 @@
         var data = google.visualization.arrayToDataTable([
           ['Province', 'Transit Spending'],
           ['Newfoundland and Labrador', NL_transit],
-          ['Prince Edward Island', PE_transit], 
-          ['Nova Scotia', NS_transit], 
-          ['New Brunswick', NB_transit], 
-          ['Quebec', QC_transit], 
+          ['Prince Edward Island', PE_transit],
+          ['Nova Scotia', NS_transit],
+          ['New Brunswick', NB_transit],
+          ['Quebec', QC_transit],
           ['Ontario', ON_transit],
           ['Manitoba', MB_transit],
           ['Alberta', AB_transit],
@@ -23,12 +23,13 @@
           ['British Columbia', BC_transit],
           ['Yukon', YT_transit],
           ['Northwest Territories', NT_transit],
-	  ['Nunavut', NU_transit], 
+	  ['Nunavut', NU_transit],
 	  ]);
 	var options = {
         	region: 'CA',
         	resolution: 'provinces',
         	displayMode: 'regions',
+          colorAxis: {colors: ['indigo']}
       	};
         var chart = new google.visualization.GeoChart(document.getElementById('map'));
         chart.draw(data, options);

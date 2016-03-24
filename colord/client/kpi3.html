@@ -12,10 +12,10 @@
         var data = google.visualization.arrayToDataTable([
           ['Province', 'Green Spending'],
           ['Newfoundland and Labrador', NL_green],
-          ['Prince Edward Island', PE_green], 
-          ['Nova Scotia', NS_green], 
-          ['New Brunswick', NB_green], 
-          ['Quebec', QC_green], 
+          ['Prince Edward Island', PE_green],
+          ['Nova Scotia', NS_green],
+          ['New Brunswick', NB_green],
+          ['Quebec', QC_green],
           ['Ontario', ON_green],
           ['Manitoba', MB_green],
           ['Alberta', AB_green],
@@ -23,12 +23,13 @@
           ['British Columbia', BC_green],
           ['Yukon', YT_green],
           ['Northwest Territories', NT_green],
-	  ['Nunavut', NU_green], 
+	  ['Nunavut', NU_green],
 	  ]);
 	var options = {
         	region: 'CA',
         	resolution: 'provinces',
         	displayMode: 'regions',
+          colorAxis: {colors: ['green']}
       	};
         var chart = new google.visualization.GeoChart(document.getElementById('map'));
         chart.draw(data, options);
